@@ -1,0 +1,11 @@
+{
+  "name": "web-prototype-backend-1",
+  "version": "1.0.0",
+  "description": "Backend for the web-prototype-1 (for test only)",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Rupam Sau",
+  "license": "ISC"
+}
