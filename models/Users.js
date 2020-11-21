@@ -1,10 +1,10 @@
 // Importing the depandencies...
-//Making a simple user Schema in mongoDB...
+// Making a simple user Schema in mongoDB...
 
 const mongoose = require("mongoose");
 
-const googleUserSchema = new mongoose.Schema({
-    googleId: {
+const userSchema = new mongoose.Schema({
+    registrationId: {
         type: String,
         required: true
     },
@@ -13,14 +13,6 @@ const googleUserSchema = new mongoose.Schema({
         required: true
     },
     userName: {
-        type: String,
-        required: true
-    },
-    firstName: {
-        type: String,
-        required: true
-    },
-    lastName: {
         type: String,
         required: true
     },
@@ -34,4 +26,4 @@ const googleUserSchema = new mongoose.Schema({
     }
 });
 
-module.exports = mongoose.model("googleuser", googleUserSchema);
+module.exports = mongoose.model("user", userSchema);

@@ -1,10 +1,11 @@
 // Getting the depandencies
 
-const GoogleStrategy = require("passport-google-oauth20");
+const GoogleStrategy = require("passport-google-oauth20").Strategy;
+const FacebookStrategy = require("passport-facebook").Strategy;
 
 // Getting the local depandencies
 
-const GoogleUser = require("../models/GoogleUsers");
+const User = require("../models/Users");
 
 // Setting up the passport module
 
@@ -15,8 +16,11 @@ module.exports = function (passport, req, res) {
   });
 
   passport.deserializeUser((id, done) => {
-    GoogleUser.findById(id, (err, user) => done(err, user));
+    User.findById(id, (err, user) => done(err, user));
   });
+  
+  //-----------------------------------------------------------------------//
+  // For Google Authentication
 
   passport.use(
     new GoogleStrategy(
@@ -26,29 +30,69 @@ module.exports = function (passport, req, res) {
         callbackURL: "/auth/google/callback",
       },
       async function (accessToken, refreshToken, profile, done) {
+        // console.log(profile);
         // Creating the new user docs in json format...
 
         const newUser = {
-          googleId: profile.id,
+          registrationId: profile.id,
           displayName: profile.displayName,
-          userName: profile.name.givenName + "_" + profile.id,
-          firstName: profile.name.givenName,
-          lastName: profile.name.familyName,
+          userName: profile.displayName.split(" ")[0] + "_" + profile.id,
           image: profile.photos[0].value,
         };
 
-        console.log(newUser);
+        // console.log(newUser);
 
         try {
           // Seeing the user already there in the DB or not...
-          let user = await GoogleUser.findOne({ googleId: profile.id });
+          let user = await User.findOne({ registrationId: profile.id });
 
           if (user) {
             // If user is already in the Database...
             done(null, user);
           } else {
             // If user is not in the Database (new user)...
-            user = await GoogleUser.create(newUser);
+            user = await User.create(newUser);
+            done(null, user);
+          }
+        } catch (err) {
+          console.log(err);
+        }
+      }
+    )
+  );
+
+  //-----------------------------------------------------------------------//
+  //-----------------------------------------------------------------------//
+  // For Facebook Authentication
+
+  passport.use(
+    new FacebookStrategy(
+      {
+        clientID: process.env.FACEBOOK_APP_ID,
+        clientSecret: process.env.FACEBOOK_APP_SECRET,
+        callbackURL: "/auth/facebook/callback",
+      },
+      async function (accessToken, refreshToken, profile, done) {
+        // Creating the new user docs in json format... 
+        //console.log(profile); 
+
+        const newUser = {
+          registrationId: profile.id,
+          displayName: profile.displayName,
+          userName: profile.displayName.split(" ")[0] + "_" + profile.id,
+          image: null
+        };
+
+        try {
+          // Seeing the user already there in the DB or not...  
+          let user = await User.findOne({ registrationId: profile.id });
+
+          if (user) {
+            // If user is already in the Database...  
+            done(null, user);
+          } else {
+            // If user is not in the Database (new user)...  
+            user = await User.create(newUser);
             done(null, user);
           }
         } catch (err) {

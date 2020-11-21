@@ -2,13 +2,31 @@
 
 
 // Controllers Functions
+// Auth Google
 module.exports.authGoogle_get = () => {
     
 }
 
+// Auth Facebook
+module.exports.authFacebook_get = () => {
+    
+}
+
+// Auth Google Callback
 module.exports.authGoogleCallback_get = (req, res) => {
     res.redirect("/secret");
 }
+
+// Auth Facebook Callback
+module.exports.authFacebookCallback_get = (req, res) => {
+    res.redirect("/secret");
+}
+
+// Login Get
+module.exports.authLogin_get = (req, res) => {
+    res.send("Auth Using Google || Auth Using Facebook")
+}
+
 
 module.exports.home_get = (req, res) => {
     res.send("You are in the Home page");
