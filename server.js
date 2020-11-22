@@ -15,6 +15,7 @@ const app = express()
 const mongoConnect = require("./configs/mongoDB")
 require("./services/passport")(passport) // requiring the passport module by exporting the module
 const authRoutes = require("./routes/authRoutes");
+const newsLetterRoutes = require("./routes/newsLetterRoutes")
 
 // Middlewares for express
 
@@ -46,6 +47,10 @@ app.use(passport.session());
 // Calling the auth Routes
 
 app.use(authRoutes)
+
+// Calling the newsletter Routes
+
+app.use(newsLetterRoutes)
 
 //---------------------------------------------------------------//
 
