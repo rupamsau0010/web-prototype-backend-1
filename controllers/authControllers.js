@@ -14,12 +14,22 @@ module.exports.authFacebook_get = () => {
 
 // Auth Google Callback
 module.exports.authGoogleCallback_get = (req, res) => {
-    res.redirect("/secret");
+    res.json({
+        status: "success",
+        payload: {
+            firstName: req.user.displayName.split(" ")[0]
+        }
+    })
 }
 
 // Auth Facebook Callback
 module.exports.authFacebookCallback_get = (req, res) => {
-    res.redirect("/secret");
+    res.json({
+        status: "success",
+        payload: {
+            firstName: req.user.displayName.split(" ")[0]
+        }
+    })
 }
 
 // Login Get
