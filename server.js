@@ -16,6 +16,8 @@ const mongoConnect = require("./configs/mongoDB")
 require("./services/passport")(passport) // requiring the passport module by exporting the module
 const authRoutes = require("./routes/authRoutes");
 const newsLetterRoutes = require("./routes/newsLetterRoutes")
+const productRoutes = require("./routes/productRoutes")
+const inputProduct = require("./temp/inputProducts")
 
 // Middlewares for express
 
@@ -52,7 +54,19 @@ app.use(authRoutes)
 
 app.use(newsLetterRoutes)
 
+// Calling the product Routes
+
+app.use("/products", productRoutes)
+
 //---------------------------------------------------------------//
+
+//---------------------------------------------------------------//
+// Temp
+
+// inputProduct() // For demo product entry
+
+//---------------------------------------------------------------//
+
 
 
 // Running the server on port 5000

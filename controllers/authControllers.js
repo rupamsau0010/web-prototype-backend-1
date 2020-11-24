@@ -17,6 +17,8 @@ module.exports.authGoogleCallback_get = (req, res) => {
     res.json({
         status: "success",
         payload: {
+            displayName: req.user.displayName,
+            usedId: req.user._id,
             firstName: req.user.displayName.split(" ")[0]
         }
     })
@@ -27,6 +29,8 @@ module.exports.authFacebookCallback_get = (req, res) => {
     res.json({
         status: "success",
         payload: {
+            displayName: req.user.displayName,
+            usedId: req.user._id,
             firstName: req.user.displayName.split(" ")[0]
         }
     })
