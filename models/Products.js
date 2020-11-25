@@ -1,3 +1,4 @@
+// Require depandencies
 const mongoose = require("mongoose")
 
 const productSchema = new mongoose.Schema({
@@ -31,6 +32,10 @@ const productSchema = new mongoose.Schema({
     numOfRating: {
         type: Number,
         default: 12
+    },
+    ratingGivenBy: {
+        type: [Object],
+        default: [null]
     },
     numOfLike: {
         type: Number,

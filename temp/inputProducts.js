@@ -49,6 +49,7 @@ const saveProduct = () => {
         color: colors,
         rating: 4.8,
         numOfRating: 10,
+        ratingGivenBy: [null],
         numOfLike: 52,
         numberInStock: 20,
         deliveryAtSingleTime: 10,

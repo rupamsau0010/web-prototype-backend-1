@@ -20,6 +20,10 @@ router.post("/:id/giverating", productControllers.giveRating_post)
 
 router.post("/:id/givelike", productControllers.giveLike_post)
 
+// Add to cart a particular product
+
+router.post("/:id/addtocart", productControllers.addToCart_post)
+
 // EXport the module
 
 module.exports = router

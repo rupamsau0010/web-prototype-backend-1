@@ -23,7 +23,18 @@ const userSchema = new mongoose.Schema({
     createdAt: {
         type: Date,
         default: Date.now
-    }
+    },
+    follower: {
+        type: Number,
+        default: 0
+    },
+    following: {
+        type: Number,
+        default: 0
+    },
+    likedPost: [Object],
+    posts: [Object],
+    cart: [Object]
 });
 
 module.exports = mongoose.model("user", userSchema);
