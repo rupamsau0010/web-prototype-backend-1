@@ -19,7 +19,7 @@ const newsLetterRoutes = require("./routes/newsLetterRoutes")
 const productRoutes = require("./routes/productRoutes")
 // const inputProduct = require("./temp/inputProducts")
 // const inputUserPost = require("./temp/inputUserPosts")
-const inputComment = require("./temp/inputComments")
+// const inputComment = require("./temp/inputComments")
 
 
 // Middlewares for express
@@ -68,9 +68,9 @@ app.use("/products", productRoutes)
 
 // inputProduct() // For demo product entry
 
-// inputUserPost() // For demon user input entry
+// inputUserPost() // For demo user input entry
 
-inputComment()
+// inputComment() // For demo comment entry
 
 //---------------------------------------------------------------//
 
