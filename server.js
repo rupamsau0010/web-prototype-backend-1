@@ -17,7 +17,10 @@ require("./services/passport")(passport) // requiring the passport module by exp
 const authRoutes = require("./routes/authRoutes");
 const newsLetterRoutes = require("./routes/newsLetterRoutes")
 const productRoutes = require("./routes/productRoutes")
-const inputProduct = require("./temp/inputProducts")
+// const inputProduct = require("./temp/inputProducts")
+// const inputUserPost = require("./temp/inputUserPosts")
+const inputComment = require("./temp/inputComments")
+
 
 // Middlewares for express
 
@@ -64,6 +67,10 @@ app.use("/products", productRoutes)
 // Temp
 
 // inputProduct() // For demo product entry
+
+// inputUserPost() // For demon user input entry
+
+inputComment()
 
 //---------------------------------------------------------------//
 

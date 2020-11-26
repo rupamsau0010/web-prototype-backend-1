@@ -10,6 +10,10 @@ const productSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    uniqueCode: {
+        type: String,
+        required: true
+    },
     catagory: {
         type: String,
         required: true
@@ -68,7 +72,11 @@ const productSchema = new mongoose.Schema({
             descriptionTitle: { type: String, required: true },
             descriptionStatement: { type: String, required: true }
         }
-    ]
+    ],
+    createdAt: {
+        type: Date,
+        default: Date.now
+    },
 })
 
 module.exports = mongoose.model("product", productSchema)
