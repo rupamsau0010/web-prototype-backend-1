@@ -30,11 +30,11 @@ router.post("/:id/givesubcomment/:maincomment", userPostController.makeNestedCom
 
 // Delete main Comments by userId and mainCommentId
 
-router.post("/:id/deletemaincomment", userPostController.deleteMainComment_post)
+router.post("/:id/deletemaincomment/:maincommentid", userPostController.deleteMainComment_post)
 
 // Delete a sub-comment by userId, mainCommentId & subCommentId
 
-router.post("/:id/deletesubcomment/:maincommentid/:subCommentId", userPostController.deleteNestedComment_post)
+router.post("/:id/deletesubcomment/:maincommentid/:subcommentid", userPostController.deleteNestedComment_post)
 
 // Like Main comment by userId & message on the payload
 

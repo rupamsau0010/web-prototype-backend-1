@@ -16,10 +16,10 @@ module.exports.userPost_get = async(req, res) => {
     if(userPost){
         // Increase the numberOfCalling (angagement)
         
-        let numberOfCalling = userPost.numOfCalling
+        let numberOfCalling = userPost.numberOfCalling
 
         numberOfCalling = numberOfCalling + 1
-        UserPost.findByIdAndUpdate({ _id: userPostId }, { numOfCalling: numberOfCalling }, function(err1, data1){
+        UserPost.findByIdAndUpdate({ _id: userPostId }, { numberOfCalling: numberOfCalling }, function(err1, data1){
             if(!err1) {
                 res.json({
                     status: "success",
@@ -64,7 +64,7 @@ module.exports.giveLikeUserPost_post = async (req, res) => {
   
       // Number of API calling of this particular product (angagement of the userPost)
       let numberOfCalling = userPost.numberOfCalling;
-      numberOfCalling = numberOfCalling + 3; // Increment three
+      numberOfCalling = numberOfCalling + 1; // Increment three
   
       // Update the number of likes in the user post
       UserPost.updateOne(
@@ -107,7 +107,7 @@ module.exports.giveLikeUserPost_post = async (req, res) => {
   
       // Number of API calling of this particular product (angagement of the product)
       let numberOfCalling = userPost.numberOfCalling;
-      numberOfCalling = numberOfCalling - 3; // Increment three
+      numberOfCalling = numberOfCalling - 1; // decrement 1
   
       // Update the number of likes in the product
       UserPost.updateOne(
@@ -191,12 +191,32 @@ module.exports.makeMainComment_post = async(req, res) => {
             maintagTime: myTime,
             subtag: []
         }
+
+        const userPost = await UserPost.findById({ _id: userPostId });
+
+        // Number of API calling of this particular product (angagement of the userPost)
+        let numberOfCalling = userPost.numberOfCalling;
+        numberOfCalling = numberOfCalling + 1; // Increment one
+
+
         Comment.findOneAndUpdate({ userPostId: userPostId }, { $push: { comments: comment }}, function(err1, data1){
             if(!err1) {
-                res.json({
-                    status: "success",
-                    payload: null
-                })
+                UserPost.updateOne(
+                    { _id: userPostId },
+                    { numberOfCalling: numberOfCalling },
+                    function (err2, data2){
+                        if(!err2) {
+                            res.json({
+                                status: "success",
+                                payload: null
+                            })
+                        } else {
+                            res.json({
+                                status: "failure",
+                                payload: "Opps...something happened wrong"
+                            })
+                        }
+                    })
             } else {
                 res.json({
                     status: "failure",
@@ -224,14 +244,32 @@ module.exports.makeMainComment_post = async(req, res) => {
 
         comment.save((err, result) => {
             if(!err) {
-                res.json({
-                    status: "success",
-                    payload: null
-                })
+                const userPost = UserPost.findById({ _id: userPostId });
+
+                // Number of API calling of this particular product (angagement of the userPost)
+                let numberOfCalling = userPost.numberOfCalling;
+                numberOfCalling = numberOfCalling + 1; // Increment one
+
+                UserPost.updateOne(
+                    { _id: userPostId },
+                    { numberOfCalling: numberOfCalling },
+                    function (err2, data2){
+                        if(!err2) {
+                            res.json({
+                                status: "success",
+                                payload: null
+                            })
+                        } else {
+                            res.json({
+                                status: "failure",
+                                payload: "Opps...something happened wrong"
+                            })
+                        }
+                    })
             } else {
                 res.json({
                     status: "failure",
-                    payload: null
+                    payload: "Opps...Something happened wrong"
                 })
             }
         })
@@ -243,19 +281,39 @@ module.exports.makeMainComment_post = async(req, res) => {
 module.exports.deleteMainComment_post = async(req, res) => {
     // Get user post id from the req.params
     let userPostId = req.params.id
+    let mainCommentId = req.params.maincommentid
 
     // Get comment id and userId from req.body
-    let mainCommentId = req.body.mainCommentId
     let userId = req.body.userId
+
+    // Get the actual user post
+    const userPost = await UserPost.findById({ _id: userPostId });
     
     // db.collection.update({"_id":0},{"$pull":{"scores":{score: 6.676176060654615}}})
 
     Comment.updateOne({ userPostId: userPostId }, {"$pull" : {"comments": {maintagById: userId, _id: mainCommentId}}}, function(err1, data1){
-        if(!err1) {
-            res.json({
-                status: "success",
-                payload: null
-            })
+        if(!err1 && data1.nModified >= 1) {
+
+            // Number of API calling of this particular product (angagement of the userPost)
+            let numberOfCalling = userPost.numberOfCalling;
+            numberOfCalling = numberOfCalling + 1; // Decrement one
+
+            UserPost.updateOne(
+                { _id: userPostId },
+                { numberOfCalling: numberOfCalling },
+                function (err2, data2){
+                    if(!err2) {
+                        res.json({
+                            status: "success",
+                            payload: null
+                        })
+                    } else {
+                        res.json({
+                            status: "failure",
+                            payload: "Opps...something happened wrong"
+                        })
+                    }
+                })
         } else {
             res.json({
                 status: "failure",
@@ -276,37 +334,49 @@ module.exports.likeMainComment_post = async(req, res) => {
     // Get comment id and userId from req.body
     let userId = req.body.userId
     let message = req.body.message
+
+    // Get the actual user post by Id
+    const userPost = await UserPost.findById({ _id: userPostId });
+
+    const addOrRemoveLike = async(input) => {
+        Comment.updateOne({ userPostId: userPostId, "comments._id": mainCommentId }, {$inc: {"comments.$.maintagLike": input}}, function(err1, data1){
+            if(!err1) {
+                // Number of API calling of this particular product (angagement of the userPost)
+                let numberOfCalling = userPost.numberOfCalling;
+                numberOfCalling = numberOfCalling + input; // Decrement one
+
+                UserPost.updateOne(
+                { _id: userPostId },
+                { numberOfCalling: numberOfCalling },
+                function (err2, data2){
+                    if(!err2) {
+                        res.json({
+                            status: "success",
+                            payload: null
+                        })
+                    } else {
+                        res.json({
+                            status: "failure",
+                            payload: "Opps...something happened wrong"
+                        })
+                    }
+                })
+            } else {
+                res.json({
+                    status: "failure",
+                    payload: "Opps...Something happened wrong"
+                })
+            }
+        })
+    }
     
     // See the message and check
     if(message === "increment") {
-        
-        Comment.updateOne({ userPostId: userPostId, "comments._id": mainCommentId }, {$inc: {"comments.$.maintagLike": 1}}, function(err1, data1){
-            if(!err1) {
-                res.json({
-                    status: "success",
-                    payload: null
-                })
-            } else {
-                res.json({
-                    status: "failure",
-                    payload: "Opps...Something happened wrong"
-                })
-            }
-        })
+        addOrRemoveLike(1)
+
     } else if(message === "decrement") {
-        Comment.updateOne({ userPostId: userPostId, "comments._id": mainCommentId }, {$inc: {"comments.$.maintagLike": -1}}, function(err1, data1){
-            if(!err1) {
-                res.json({
-                    status: "success",
-                    payload: null
-                })
-            } else {
-                res.json({
-                    status: "failure",
-                    payload: "Opps...Something happened wrong"
-                })
-            }
-        })
+        addOrRemoveLike(-1)
+
     }
 }
 
@@ -329,8 +399,10 @@ module.exports.makeNestedComment_post = async(req, res) => {
 
 
     // Find the user post from the comment by userPostId
-
     const commentAlreadyExists = await Comment.findOne({ userPostId: userPostId }) 
+
+    // Get the actual user post
+    const userPost = await UserPost.findById({ _id: userPostId });
 
     if(commentAlreadyExists) {
         // get the comments array  
@@ -357,11 +429,32 @@ module.exports.makeNestedComment_post = async(req, res) => {
 
         Comment.updateOne({ userPostId: userPostId, "comments._id": mainCommentId }, { $set: { "comments.$.subtag" : changeObject.subtag }}, function(err1, data1){
             if(!err1) {
-                res.json({
-                    status: "success",
-                    payload: null
+
+
+                // Number of API calling of this particular product (angagement of the userPost)
+                let numberOfCalling = userPost.numberOfCalling;
+                numberOfCalling = numberOfCalling + 1; // Decrement one
+
+                UserPost.updateOne(
+                { _id: userPostId },
+                { numberOfCalling: numberOfCalling },
+                function (err2, data2){
+                    if(!err2) {
+                        res.json({
+                            status: "success",
+                            payload: null
+                        })
+                    } else {
+                        // console.log(1);
+                        res.json({
+                            status: "failure",
+                            payload: "Opps...something happened wrong"
+                        })
+                    }
                 })
+
             } else {
+                // console.log(2);
                 res.json({
                     status: "failure",
                     payload: "Opps...Something happened wrong"
@@ -369,6 +462,7 @@ module.exports.makeNestedComment_post = async(req, res) => {
             }
         })
     } else {
+        // console.log(3);
         res.json({
             status: "failure",
             payload: "Opps...Something happened wrong"
@@ -389,10 +483,14 @@ module.exports.deleteNestedComment_post = async(req, res) => {
 
     let userId = req.body.userId
 
+    // Get the actual user post
+    const userPost = await UserPost.findById({ _id: userPostId });
+
     // Get the comment data by userPostId
     let data1 = await Comment.findOne({ userPostId: userPostId })
     
     // Change the data
+    let changeChecker = 0
     if(data1) {
         let i, j
         console.log(data1.comments);
@@ -400,8 +498,9 @@ module.exports.deleteNestedComment_post = async(req, res) => {
             if (String(data1.comments[i]._id) === String(mainCommentId)) {
                 // jsonData1 = data1.comments[i]
                 for(j=0; j<data1.comments[i].subtag.length; j++) {
-                    if (String(data1.comments[i].subtag[j]._id) === String(subCommentId)) {
+                    if (String(data1.comments[i].subtag[j]._id) === String(subCommentId) && String(data1.comments[i].subtag[j].subtagStatementBy) === String(userId)) {
                         data1.comments[i].subtag.splice(j, 1)
+                        changeChecker = 1
                     }
                 }
             }
@@ -409,11 +508,28 @@ module.exports.deleteNestedComment_post = async(req, res) => {
         
         // Replace the old data
         Comment.replaceOne({ userPostId: userPostId }, data1, function(err2, data2){
-            if(!err2) {
-                res.json({
-                    status: "success",
-                    payload: null
+            if(!err2 && changeChecker === 1) {
+                // Number of API calling of this particular product (angagement of the userPost)
+                let numberOfCalling = userPost.numberOfCalling;
+                numberOfCalling = numberOfCalling + 1; // Decrement one
+
+                UserPost.updateOne(
+                { _id: userPostId },
+                { numberOfCalling: numberOfCalling },
+                function (err3, data3){
+                    if(!err3) {
+                        res.json({
+                            status: "success",
+                            payload: null
+                        })
+                    } else {
+                        res.json({
+                            status: "failure",
+                            payload: "Opps...something happened wrong"
+                        })
+                    }
                 })
+                
             } else {
                 res.json({
                     status: "failure",
@@ -441,33 +557,50 @@ module.exports.likeNestedComment_post = async(req, res) => {
     let userId = req.body.userId
     let message = req.body.message
 
-    // check the conditions
-    if(message === "increment") {
-        console.log("I was here");
+    // Get the actual user post by Id
+    const userPost = await UserPost.findById({ _id: userPostId });
 
+    const addOrRemoveLike =  async(input) =>{
         // Get the comment data by userPostId
         let data1 = await Comment.findOne({ userPostId: userPostId })
      
         // Change the data
         if(data1) {
             let i, j
-            console.log(data1.comments);
+            
             for(i=0; i<data1.comments.length; i++) {
                 if (String(data1.comments[i]._id) === String(mainCommentId)) {
                     // jsonData1 = data1.comments[i]
                     for(j=0; j<data1.comments[i].subtag.length; j++) {
                         if (String(data1.comments[i].subtag[j]._id) === String(subCommentId)) {
-                            data1.comments[i].subtag[j].subtagStatementLike += 1
+                            data1.comments[i].subtag[j].subtagStatementLike += input
                         }
                     }
                 }
             }
-
+            
+            // replace the existing data
             Comment.replaceOne({ userPostId: userPostId }, data1, function(err2, data2){
                 if(!err2) {
-                    res.json({
-                        status: "success",
-                        payload: null
+                    // Number of API calling of this particular product (angagement of the userPost)
+                    let numberOfCalling = userPost.numberOfCalling;
+                    numberOfCalling = numberOfCalling + input; // Decrement one
+
+                    UserPost.updateOne(
+                    { _id: userPostId },
+                    { numberOfCalling: numberOfCalling },
+                    function (err2, data2){
+                        if(!err2) {
+                            res.json({
+                                status: "success",
+                                payload: null
+                            })
+                        } else {
+                            res.json({
+                                status: "failure",
+                                payload: "Opps...something happened wrong"
+                            })
+                        }
                     })
                 } else {
                     res.json({
@@ -482,9 +615,13 @@ module.exports.likeNestedComment_post = async(req, res) => {
                 payload: null
             })
         }
-        
+    }
+
+    // check the conditions
+    if(message === "increment") {
+        addOrRemoveLike(1)
     } else if(message === "decrement") {
-    
+        addOrRemoveLike(-1)
     }
 }
 

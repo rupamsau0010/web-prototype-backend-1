@@ -14,6 +14,7 @@ const mongoConnect = () => {
       useNewUrlParser: true,
       useUnifiedTopology: true,
       useCreateIndex: true,
+      useFindAndModify: false
     })
     .then((result) => {
       console.log("Successfullly coneected with MongoDB atlas");
