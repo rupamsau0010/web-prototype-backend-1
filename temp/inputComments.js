@@ -28,18 +28,21 @@ const saveComment = () => {
                 maintag: "This is main tag 1",
                 maintagBy: "maintagby - 1",
                 maintagById: "5fbce458ab4372504810b467",
+                maintagLike: 0,
                 maintagTime: myTime,
                 subtag: [
                     {
                         subtagStatement: "This is subtag 1",
                         subtagStatementBy: "subtag - 1",
                         subtagStatementById: "5fbce458ab4372504810b467",
+                        subtagStatementLike: 0,
                         subtagTime: myTime
                     },
                     {
                         subtagStatement: "This is subtag 2",
                         subtagStatementBy: "subtag - 2",
                         subtagStatementById: "5fbce458ab4372504810b467",
+                        subtagStatementLike: 0,
                         subtagTime: myTime
                     }
                 ]
@@ -48,18 +51,21 @@ const saveComment = () => {
                 maintag: "This is main tag 2",
                 maintagBy: "maintagby - 2",
                 maintagById: "5fbce458ab4372504810b467",
+                maintagLike: 0,
                 maintagTime: myTime,
                 subtag: [
                     {
                         subtagStatement: "This is subtag 3",
                         subtagStatementBy: "subtag - 3",
                         subtagStatementById: "5fbce458ab4372504810b467",
+                        subtagStatementLike: 0,
                         subtagTime: myTime
                     },
                     {
                         subtagStatement: "This is subtag 4",
                         subtagStatementBy: "subtag - 4",
                         subtagStatementById: "5fbce458ab4372504810b467",
+                        subtagStatementLike: 0,
                         subtagTime: myTime
                     }
                 ]

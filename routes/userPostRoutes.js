@@ -36,6 +36,14 @@ router.post("/:id/deletemaincomment", userPostController.deleteMainComment_post)
 
 router.post("/:id/deletesubcomment/:maincommentid/:subCommentId", userPostController.deleteNestedComment_post)
 
+// Like Main comment by userId & message on the payload
+
+router.post("/:id/likemaincomment/:maincomment", userPostController.likeMainComment_post)
+
+// Like Nested comment by userId & message on the payload
+
+router.post("/:id/likenestedcomment/:maincomment/:subcomment", userPostController.likeNestedComment_post)
+
 // Export router
 
 module.exports = router

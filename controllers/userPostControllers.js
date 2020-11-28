@@ -259,11 +259,55 @@ module.exports.deleteMainComment_post = async(req, res) => {
         } else {
             res.json({
                 status: "failure",
-                payload: "Opps...Something happened wrong"
+                payload: "Opps...Something happened wrong or you can't delete this post"
             })
         }
     })
 
+}
+
+// Like any maincomment on the post
+
+module.exports.likeMainComment_post = async(req, res) => {
+    // Get user post id from the req.params
+    let userPostId = req.params.id
+    let mainCommentId = req.params.maincomment
+
+    // Get comment id and userId from req.body
+    let userId = req.body.userId
+    let message = req.body.message
+    
+    // See the message and check
+    if(message === "increment") {
+        
+        Comment.updateOne({ userPostId: userPostId, "comments._id": mainCommentId }, {$inc: {"comments.$.maintagLike": 1}}, function(err1, data1){
+            if(!err1) {
+                res.json({
+                    status: "success",
+                    payload: null
+                })
+            } else {
+                res.json({
+                    status: "failure",
+                    payload: "Opps...Something happened wrong"
+                })
+            }
+        })
+    } else if(message === "decrement") {
+        Comment.updateOne({ userPostId: userPostId, "comments._id": mainCommentId }, {$inc: {"comments.$.maintagLike": -1}}, function(err1, data1){
+            if(!err1) {
+                res.json({
+                    status: "success",
+                    payload: null
+                })
+            } else {
+                res.json({
+                    status: "failure",
+                    payload: "Opps...Something happened wrong"
+                })
+            }
+        })
+    }
 }
 
 // Make nested comment on any comment of any post
@@ -339,7 +383,7 @@ module.exports.deleteNestedComment_post = async(req, res) => {
 
     let userPostId = req.params.id
     let mainCommentId = req.params.maincommentid
-    let subCommentId = req.params.subCommentId
+    let subCommentId = req.params.subcommentid
 
     // Get data from req.bady
 
@@ -382,6 +426,65 @@ module.exports.deleteNestedComment_post = async(req, res) => {
             status: "failure",
             payload: "Opps...Something happened wrong"
         })
+    }
+}
+
+// Like any nested comment on the post
+
+module.exports.likeNestedComment_post = async(req, res) => {
+    // Get user post id from the req.params
+    let userPostId = req.params.id
+    let mainCommentId = req.params.maincomment
+    let subCommentId = req.params.subcomment
+
+    // Get comment id and userId from req.body
+    let userId = req.body.userId
+    let message = req.body.message
+
+    // check the conditions
+    if(message === "increment") {
+        console.log("I was here");
+
+        // Get the comment data by userPostId
+        let data1 = await Comment.findOne({ userPostId: userPostId })
+     
+        // Change the data
+        if(data1) {
+            let i, j
+            console.log(data1.comments);
+            for(i=0; i<data1.comments.length; i++) {
+                if (String(data1.comments[i]._id) === String(mainCommentId)) {
+                    // jsonData1 = data1.comments[i]
+                    for(j=0; j<data1.comments[i].subtag.length; j++) {
+                        if (String(data1.comments[i].subtag[j]._id) === String(subCommentId)) {
+                            data1.comments[i].subtag[j].subtagStatementLike += 1
+                        }
+                    }
+                }
+            }
+
+            Comment.replaceOne({ userPostId: userPostId }, data1, function(err2, data2){
+                if(!err2) {
+                    res.json({
+                        status: "success",
+                        payload: null
+                    })
+                } else {
+                    res.json({
+                        status: "failure",
+                        payload: null
+                    })
+                }
+            })
+        } else {
+            res.json({
+                status: "failure",
+                payload: null
+            })
+        }
+        
+    } else if(message === "decrement") {
+    
     }
 }
 

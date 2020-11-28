@@ -19,7 +19,11 @@ const commentSchema = new mongoose.Schema({
         maintagById: {
             type: String,
             required: true
-        }, 
+        },
+        maintagLike: {
+            type: Number,
+            default: 0
+        },
         maintagTime: {
             type: String
         },
@@ -33,6 +37,10 @@ const commentSchema = new mongoose.Schema({
             subtagStatementById: {
                 type: String,
                 required: true
+            },
+            subtagStatementLike: {
+                type: Number,
+                default: 0
             },
             subtagTime: {
                 type: String
