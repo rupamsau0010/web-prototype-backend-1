@@ -16,6 +16,10 @@ const commentSchema = new mongoose.Schema({
             type: String,
             required: true
         },
+        maintagById: {
+            type: String,
+            required: true
+        }, 
         maintagTime: {
             type: String
         },
@@ -25,6 +29,10 @@ const commentSchema = new mongoose.Schema({
             },
             subtagStatementBy: {
                 type: String
+            },
+            subtagStatementById: {
+                type: String,
+                required: true
             },
             subtagTime: {
                 type: String

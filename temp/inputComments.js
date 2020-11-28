@@ -22,21 +22,24 @@ const saveComment = () => {
     // console.log(myTime);
 
     const comment = new Comment({
-        userPostId: "5fbf25324200ed4488d4f48d",
+        userPostId: "5fbfc467a6305247f410d219",
         comments: [
             {
                 maintag: "This is main tag 1",
                 maintagBy: "maintagby - 1",
+                maintagById: "5fbce458ab4372504810b467",
                 maintagTime: myTime,
                 subtag: [
                     {
                         subtagStatement: "This is subtag 1",
                         subtagStatementBy: "subtag - 1",
+                        subtagStatementById: "5fbce458ab4372504810b467",
                         subtagTime: myTime
                     },
                     {
                         subtagStatement: "This is subtag 2",
                         subtagStatementBy: "subtag - 2",
+                        subtagStatementById: "5fbce458ab4372504810b467",
                         subtagTime: myTime
                     }
                 ]
@@ -44,16 +47,19 @@ const saveComment = () => {
             {
                 maintag: "This is main tag 2",
                 maintagBy: "maintagby - 2",
+                maintagById: "5fbce458ab4372504810b467",
                 maintagTime: myTime,
                 subtag: [
                     {
                         subtagStatement: "This is subtag 3",
                         subtagStatementBy: "subtag - 3",
+                        subtagStatementById: "5fbce458ab4372504810b467",
                         subtagTime: myTime
                     },
                     {
                         subtagStatement: "This is subtag 4",
                         subtagStatementBy: "subtag - 4",
+                        subtagStatementById: "5fbce458ab4372504810b467",
                         subtagTime: myTime
                     }
                 ]
@@ -71,3 +77,33 @@ const saveComment = () => {
 }
 
 module.exports = saveComment
+
+
+
+
+
+// Get the sub-comment array
+// subCommentArray = commentAlreadyExists.comments
+        
+// let i
+// let changeObject = {}
+// for(i=0; i<subCommentArray.length; i++) {
+//     if(String(subCommentArray[i]._id) === String(mainCommentId)) {
+//         changeObject = subCommentArray[i]
+//     }
+// }
+
+// const comment = {
+//     maintag: maintag,
+//     maintagBy: maintagBy,
+//     maintagTime: myTime,
+//     subtag: []
+// }
+
+// changeObject.subtag.push(comment)
+
+// Comment.findOneAndDelete({ comments: { _id: mainCommentId }}, function(err1, data1){
+//     if(!err1) {
+//         Comment.add
+//     }
+// })

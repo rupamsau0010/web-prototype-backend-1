@@ -32,7 +32,7 @@ const userSchema = new mongoose.Schema({
         type: Number,
         default: 0
     },
-    likedPost: [Object],
+    likedPost: [String],
     posts: [Object],
     cart: [Object]
 });

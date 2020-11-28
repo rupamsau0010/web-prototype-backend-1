@@ -17,6 +17,7 @@ require("./services/passport")(passport) // requiring the passport module by exp
 const authRoutes = require("./routes/authRoutes");
 const newsLetterRoutes = require("./routes/newsLetterRoutes")
 const productRoutes = require("./routes/productRoutes")
+const userPostRoutes = require("./routes/userPostRoutes")
 // const inputProduct = require("./temp/inputProducts")
 // const inputUserPost = require("./temp/inputUserPosts")
 // const inputComment = require("./temp/inputComments")
@@ -60,6 +61,10 @@ app.use(newsLetterRoutes)
 // Calling the product Routes
 
 app.use("/products", productRoutes)
+
+// Calling the user post Routes
+
+app.use("/userposts", userPostRoutes)
 
 //---------------------------------------------------------------//
 

@@ -8,11 +8,11 @@ const userPostsSchema = new mongoose.Schema({
         required: true
     },
     images: [String],
-    numOfLikes: {
+    numOfLike: {
         type: Number,
         default: 0
     },
-    numOfCalling: {
+    numberOfCalling: {
         type: Number,
         default: 0
     },
