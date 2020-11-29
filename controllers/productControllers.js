@@ -52,8 +52,8 @@ module.exports.product_get = async (req, res) => {
       .sort({ _id: -1 })
       .limit(10);
 
-    if (similarProducts) {
-      if (moreProducts) {
+    if (similarProducts.length !== 0) {
+      if (moreProducts.length !== 0) {
         res.json({
           status: "success",
           payload: [product, similarProducts, moreProducts],
@@ -65,7 +65,7 @@ module.exports.product_get = async (req, res) => {
         });
       }
     } else {
-      if (moreProducts) {
+      if (moreProducts.length !== 0) {
         res.json({
           status: "success",
           payload: [product, moreProducts],
@@ -122,9 +122,9 @@ module.exports.giveRating_post = async (req, res) => {
 
       const product = await Product.findById(productId);
 
-      // Number of API calling of this particular product (angagement of the product)
-      let numberOfCalling = product.numberOfCalling;
-      numberOfCalling = numberOfCalling + 2; // Increment two
+      // // Number of API calling of this particular product (angagement of the product)
+      // let numberOfCalling = product.numberOfCalling;
+      // numberOfCalling = numberOfCalling + 2; // Increment two
 
       // Get product rating and numberOfRating
 
@@ -149,7 +149,6 @@ module.exports.giveRating_post = async (req, res) => {
         {
           rating: newRating,
           numOfRating: numberOfRating,
-          numberOfCalling: numberOfCalling,
           $set: { "ratingGivenBy.$.rating": rating },
         },
         function (err, data) {
@@ -170,6 +169,10 @@ module.exports.giveRating_post = async (req, res) => {
       // Get product by Id
 
       const product = await Product.findById(productId);
+
+      // Number of API calling of this particular product (angagement of the product)
+      let numberOfCalling = product.numberOfCalling;
+      numberOfCalling = numberOfCalling + 2; // Increment two
 
       // Get product rating and numberOfRating
 
@@ -193,6 +196,7 @@ module.exports.giveRating_post = async (req, res) => {
         {
           rating: newRating,
           numOfRating: newNumberOfRating,
+          numberOfCalling: numberOfCalling,
           $push: { ratingGivenBy: { rating: rating, userId: userId } },
         },
         function (err, data) {
@@ -245,24 +249,21 @@ module.exports.giveLike_post = async (req, res) => {
       { numOfLike: newLikes, numberOfCalling: numberOfCalling },
       function (err1, data1) {
         if (!err1) {
-          User.updateOne(
-            { _id: userId },
-            { $push: { likedPost: product } },
-            function (err2, data2) {
-              if (!err2) {
-                res.json({
-                  status: "success",
-                  payload: null,
-                });
-              } else {
-                res.json({
-                  status: "failure",
-                  payload: "Opps...something went wrong",
-                });
-              }
+          User.updateOne({ _id: userId }, {$push: {likedPost: productId}}, function(err2, data2){
+            if(!err2) {
+              res.json({
+                status: "success",
+                payload: null
+              })
+            } else {
+              res.json({
+                status: "failure",
+                payload: "Opps...something went wrong",
+              });
             }
-          );
+          })
         } else {
+          // console.log(2);
           res.json({
             status: "failure",
             payload: "Opps...something went wrong",
@@ -283,41 +284,19 @@ module.exports.giveLike_post = async (req, res) => {
       { numOfLike: newLikes, numberOfCalling: numberOfCalling },
       function (err1, data1) {
         if (!err1) {
-          // Update the like posts status of the user
-          User.findOne({ _id: userId }, function (err, data) {
-            if (data) {
-              let i;
-              for (i = 0; i < data.likedPost.length; i++) {
-                if (data.likedPost[i]._id == productId) {
-                  // console.log(data.likedPost[i]._id);
-                  data.likedPost.splice(i);
-                }
-              }
-              // console.log(data.likedPost);
-              User.updateOne(
-                { _id: userId },
-                { likedPost: data.likedPost },
-                function (err, data) {
-                  if (err) {
-                    res.json({
-                      status: "failure",
-                      payload: "Opps...Something happened wrong",
-                    });
-                  } else {
-                    res.json({
-                      status: "success",
-                      payload: null,
-                    });
-                  }
-                }
-              );
+          User.updateOne({ _id: userId }, {$pull: {likedPost: productId}}, function(err2, data2){
+            if(!err2) {
+              res.json({
+                status: "success",
+                payload: null
+              })
             } else {
               res.json({
                 status: "failure",
-                payload: "Opps...Something happened wrong",
+                payload: "Opps...something went wrong",
               });
             }
-          });
+          })
         } else {
           res.json({
             status: "failure",
@@ -350,59 +329,35 @@ module.exports.addToCart_post = async (req, res) => {
   if (message === "add") {
     // Update the cart array of the user (addtocart)
 
-    User.updateOne(
-      { _id: userId },
-      { $push: { cart: product } },
-      function (err2, data2) {
-        if (!err2) {
-          res.json({
-            status: "success",
-            payload: null,
-          });
-        } else {
-          res.json({
-            status: "failure",
-            payload: "Opps...something went wrong",
-          });
-        }
-      }
-    );
-  } else if (message === "remove") {
-    // Update the cart array of the user (removefromthecart)
+    User.updateOne({ _id: userId }, {$push: {cart: productId}}, function(err2, data2){
 
-    User.findOne({ _id: userId }, function (err, data) {
-      if (data) {
-        let i;
-        for (i = 0; i < data.cart.length; i++) {
-          if (data.cart[i]._id == productId) {
-            // Remove that item
-            data.cart.splice(i);
-          }
-        }
-
-        User.updateOne(
-          { _id: userId },
-          { cart: data.cart },
-          function (err, data) {
-            if (err) {
-              res.json({
-                status: "failure",
-                payload: "Opps...Something happened wrong",
-              });
-            } else {
-              res.json({
-                status: "success",
-                payload: null,
-              });
-            }
-          }
-        );
+      if(!err2) {
+        res.json({
+          status: "success",
+          payload: null
+        })
       } else {
         res.json({
           status: "failure",
-          payload: "Opps...Something happened wrong",
+          payload: "Opps...something went wrong",
         });
       }
-    });
+    })
+  } else if (message === "remove") {
+    // Update the cart array of the user (removefromthecart)
+
+    User.updateOne({ _id: userId }, {$pull: {cart: productId}}, function(err2, data2){
+      if(!err2) {
+        res.json({
+          status: "success",
+          payload: null
+        })
+      } else {
+        res.json({
+          status: "failure",
+          payload: "Opps...something went wrong",
+        });
+      }
+    })
   }
 };

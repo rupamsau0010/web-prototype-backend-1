@@ -19,11 +19,11 @@ router.post("/:id/giverating", productControllers.giveRating_post)
 
 // Like the product by particular id
 
-router.post("/:id/givelike", requireAuth, productControllers.giveLike_post)
+router.post("/:id/givelike", productControllers.giveLike_post)
 
 // Add to cart a particular product
 
-router.post("/:id/addtocart", requireAuth, productControllers.addToCart_post)
+router.post("/:id/addtocart", productControllers.addToCart_post)
 
 // EXport the module
 

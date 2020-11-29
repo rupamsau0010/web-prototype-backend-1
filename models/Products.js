@@ -38,8 +38,7 @@ const productSchema = new mongoose.Schema({
         default: 12
     },
     ratingGivenBy: {
-        type: [Object],
-        default: [null]
+        type: [Object]
     },
     numOfLike: {
         type: Number,

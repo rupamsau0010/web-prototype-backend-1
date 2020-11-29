@@ -33,8 +33,8 @@ const userSchema = new mongoose.Schema({
         default: 0
     },
     likedPost: [String],
-    posts: [Object],
-    cart: [Object]
+    posts: [String],
+    cart: [String]
 });
 
 module.exports = mongoose.model("user", userSchema);
