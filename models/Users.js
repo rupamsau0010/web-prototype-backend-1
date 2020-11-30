@@ -20,17 +20,21 @@ const userSchema = new mongoose.Schema({
         type: String,
 
     },
+    profileType: {
+        type: String,
+        required: true
+    },
     createdAt: {
         type: Date,
         default: Date.now
     },
     follower: {
-        type: Number,
-        default: 0
+        count: {type: Number, default: 0},
+        followers: [String]
     },
     following: {
-        type: Number,
-        default: 0
+        count: {type: Number, default: 0},
+        followings: [String]
     },
     likedPost: [String],
     posts: [String],

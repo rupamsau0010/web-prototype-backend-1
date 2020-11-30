@@ -21,6 +21,7 @@ const saveUserPost = () => {
         images: images,
         numOfLike: 0,
         numberOfCalling: 0,
+        postById: "5fbce458ab4372504810b467",
         originalProductRef: "HGT138"
     })
 

@@ -18,6 +18,7 @@ const authRoutes = require("./routes/authRoutes");
 const newsLetterRoutes = require("./routes/newsLetterRoutes")
 const productRoutes = require("./routes/productRoutes")
 const userPostRoutes = require("./routes/userPostRoutes")
+const getProfileRoutes = require("./routes/getProfilesRoutes")
 // const inputProduct = require("./temp/inputProducts")
 // const inputUserPost = require("./temp/inputUserPosts")
 // const inputComment = require("./temp/inputComments")
@@ -65,6 +66,10 @@ app.use("/products", productRoutes)
 // Calling the user post Routes
 
 app.use("/userposts", userPostRoutes)
+
+// calling the get profiles Routes
+
+app.use("/getprofiles", getProfileRoutes)
 
 //---------------------------------------------------------------//
 

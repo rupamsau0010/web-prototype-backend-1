@@ -38,6 +38,7 @@ module.exports = function (passport, req, res) {
           displayName: profile.displayName,
           userName: profile.displayName.split(" ")[0] + "_" + profile.id,
           image: profile.photos[0].value,
+          profileType: "general"
         };
 
         // console.log(newUser);
@@ -80,7 +81,8 @@ module.exports = function (passport, req, res) {
           registrationId: profile.id,
           displayName: profile.displayName,
           userName: profile.displayName.split(" ")[0] + "_" + profile.id,
-          image: null
+          image: null,
+          profileType: "general"
         };
 
         try {

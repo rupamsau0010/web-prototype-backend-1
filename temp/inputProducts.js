@@ -43,6 +43,7 @@ const saveProduct = () => {
         brandNameOrShopName: "Puma",
         catagory: "Garments",
         tagline: "sport shoes for men and women",
+        postById: "wrong//When Business User Will Be created Then It Will Come",
         image: images,
         price: 5000,
         size: sizes,

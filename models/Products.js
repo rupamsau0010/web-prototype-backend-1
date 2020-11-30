@@ -18,6 +18,10 @@ const productSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    postById: {
+        type: String,
+        required: true
+    },
     tagline: {
         type: String,
         required: true
