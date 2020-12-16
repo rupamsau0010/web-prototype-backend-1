@@ -16,6 +16,10 @@ const businessUserDetailsSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    businessImg: {
+        type: String,
+        required: true
+    },
     businessOwnerName: {
         type: String,
         required: true,
