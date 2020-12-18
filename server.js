@@ -20,6 +20,7 @@ const productRoutes = require("./routes/productRoutes")
 const userPostRoutes = require("./routes/userPostRoutes")
 const getProfileRoutes = require("./routes/getProfilesRoutes")
 const createBusinessRoutes = require("./routes/createBusinessRoutes")
+const homeScreenRoutes = require("./routes/1.homeScreenRoutes")
 // const inputProduct = require("./temp/inputProducts")
 // const inputUserPost = require("./temp/inputUserPosts")
 // const inputComment = require("./temp/inputComments")
@@ -75,6 +76,11 @@ app.use("/getprofiles", getProfileRoutes)
 // calling the create business Routes
 
 app.use("/shifttobusiness", createBusinessRoutes)
+
+//Calling the Screen Routes
+// Calling the homeScreenRoters
+
+app.use("/homescreen", homeScreenRoutes)
 
 //---------------------------------------------------------------//
 

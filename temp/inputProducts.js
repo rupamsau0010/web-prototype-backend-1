@@ -40,9 +40,9 @@ const descriptions = [
 const saveProduct = () => {
     const product = new Product({
         name: "Sport Shoes for men",
-        brandNameOrShopName: "Puma",
-        catagory: "Garments",
-        tagline: "sport shoes for men and women",
+        brandNameOrShopName: "HARPAL",
+        catagory: "Shoes",
+        tagline: "Shoes for men and women",
         postById: "wrong//When Business User Will Be created Then It Will Come",
         image: images,
         price: 5000,
@@ -52,6 +52,7 @@ const saveProduct = () => {
         numOfRating: 10,
         ratingGivenBy: [null],
         numOfLike: 52,
+        uniqueCode: "SHO001254",
         numberInStock: 20,
         deliveryAtSingleTime: 10,
         timeOfDelivery: 7,

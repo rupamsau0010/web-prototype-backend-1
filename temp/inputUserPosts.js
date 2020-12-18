@@ -17,12 +17,12 @@ const images = ["https://helpx.adobe.com/content/dam/help/en/stock/how-to/visual
 
 const saveUserPost = () => {
     const userpost = new UserPost({
-        caption: "This is my number 3 post",
+        caption: "This is my number 10 post",
         images: images,
         numOfLike: 0,
         numberOfCalling: 0,
         postById: "5fbce458ab4372504810b467",
-        originalProductRef: "HGT138"
+        originalProductRef: "HGT505"
     })
 
     userpost.save((err, result) => {
