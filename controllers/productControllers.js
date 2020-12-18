@@ -52,31 +52,11 @@ module.exports.product_get = async (req, res) => {
       .sort({ _id: -1 })
       .limit(10);
 
-    if (similarProducts.length !== 0) {
-      if (moreProducts.length !== 0) {
-        res.json({
-          status: "success",
-          payload: [product, similarProducts, moreProducts],
-        });
-      } else {
-        res.json({
-          status: "success",
-          payload: [product, similarProducts],
-        });
-      }
-    } else {
-      if (moreProducts.length !== 0) {
-        res.json({
-          status: "success",
-          payload: [product, moreProducts],
-        });
-      } else {
-        res.json({
-          status: "success",
-          payload: [product],
-        });
-      }
-    }
+    res.json({
+      status: "success",
+      payload: [product, similarProducts, moreProducts]
+    })
+
   } else {
     res.json({
       status: "failure",
