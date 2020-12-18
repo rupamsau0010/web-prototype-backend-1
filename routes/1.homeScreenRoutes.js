@@ -8,7 +8,7 @@ const router = express.Router()
 
 const homeScreenControllers = require("../controllers/1.homeScreenControllers")
 
-router.get("/:skip", homeScreenControllers.productsAndUserposts_get)
+router.get("/suggestions/:skip", homeScreenControllers.productsAndUserposts_get)
 
 // Export the router
 

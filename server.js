@@ -77,7 +77,7 @@ app.use("/getprofiles", getProfileRoutes)
 
 app.use("/shifttobusiness", createBusinessRoutes)
 
-//Calling the Screen Routes
+// Calling the Screen Routes
 // Calling the homeScreenRoters
 
 app.use("/homescreen", homeScreenRoutes)
