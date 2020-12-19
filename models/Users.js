@@ -38,7 +38,27 @@ const userSchema = new mongoose.Schema({
     },
     likedPost: [String],
     posts: [String],
-    cart: [String]
+    cart: [String],
+    gender: {
+        type: String,
+        default: null
+    },
+    email: {
+        type: String,
+        default: null
+    },
+    phoneNo: {
+        type: String,
+        default: null
+    },
+    deliveryPincode: {
+        type: String,
+        default: null
+    },
+    deliveryLandmark: {
+        type: String,
+        default: null
+    }
 });
 
 module.exports = mongoose.model("user", userSchema);
