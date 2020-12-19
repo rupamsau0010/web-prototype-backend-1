@@ -68,3 +68,46 @@ module.exports.followOrUnfollow_post = async(req, res) => {
     }
 }
 
+// Update my profile(all except img)
+
+module.exports.updateProfile_post = async(req, res) => {
+    // Get data from req.params
+
+    // Get data from req.body
+    const userId = req.body.userId
+    const name = req.body.name
+    const userName = req.body.userName
+    const email = req.body.email
+    const phoneNo = req.body.phoneNo
+    const gender = req.body.gender
+    const deliveryLandmark = req.body.deliveryLandmark
+    const deliveryPincode = req.body.deliveryPincode
+
+    const payloadData = {
+        userId: userId,
+        displayName: name,
+        userName: userName,
+        email: email,
+        phoneNo: phoneNo,
+        gender: gender,
+        deliveryLandmark: deliveryLandmark,
+        deliveryPincode: deliveryPincode
+    }
+
+    User.findByIdAndUpdate({_id: userId}, {displayName: name, userName: userName, email: email, phoneNo: phoneNo, gender: gender, deliveryLandmark: deliveryLandmark, deliveryPincode: deliveryPincode}, function(err1, data1){
+        if(data1) {
+            res.json({
+                status: "success",
+                payload: {
+                    message: "Data updated successfully",
+                    data: payloadData
+                }
+            })
+        } else {
+            res.json({
+                status: "failure",
+                payload: "Opps...Something happened wrong"
+            })
+        }
+    })
+}

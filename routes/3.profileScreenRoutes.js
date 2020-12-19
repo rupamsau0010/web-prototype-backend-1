@@ -12,6 +12,10 @@ const profileScreenControllers = require("../controllers/3.profileScreenControll
 
 router.post("/followorunfollow/:targetId", profileScreenControllers.followOrUnfollow_post)
 
+// Update profile data (except profile img)
+
+router.post("/updateprofile", profileScreenControllers.updateProfile_post)
+
 // Export the module
 
 module.exports = router
