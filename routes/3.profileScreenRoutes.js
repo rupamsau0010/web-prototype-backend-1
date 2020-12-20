@@ -21,6 +21,10 @@ router.post("/updateprofile", profileScreenControllers.updateProfile_post)
 
 router.post("/updateprofileimage", uploadProfileImage, profileScreenControllers.updateProfileImage_post)
 
+// Delete the user's profile image
+
+router.post("/deleteprofileimage", profileScreenControllers.deleteProfileImage_post)
+
 
 // Export the module
 

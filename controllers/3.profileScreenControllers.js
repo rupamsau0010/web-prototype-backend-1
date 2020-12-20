@@ -206,3 +206,29 @@ module.exports.updateProfileImage_post = async(req, res) => {
         })
     }
 }
+
+// Delete profile image
+
+module.exports.deleteProfileImage_post = async(req, res) => {
+    // Get data from req.params
+
+    // Get data from req.body
+    const userId = req.body.userId
+
+    const sampleImage = "https://salt-ecosystem-web-1.s3.ap-south-1.amazonaws.com/businessUserImages/generalProfileImage.PNG"
+
+    // Find the user and delete the profile image(update to sample Image)
+    User.findByIdAndUpdate({_id: userId}, {image: sampleImage}, {new: true}, function(err1, data1){
+        if(!err1) {
+            res.json({
+                status: "success",
+                payload: data1.image
+            })
+        } else {
+            res.json({
+                status: "failure",
+                payload: "Opps...Something happened wrong"
+            })
+        }
+    })
+}
