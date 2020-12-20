@@ -7,6 +7,7 @@ const router = express.Router()
 // Import Local depandencies
 
 const profileScreenControllers = require("../controllers/3.profileScreenControllers")
+const uploadProfileImage = require("../services/multerForProfileImage")
 
 // Follow or unfollow any user accout
 
@@ -15,6 +16,11 @@ router.post("/followorunfollow/:targetId", profileScreenControllers.followOrUnfo
 // Update profile data (except profile img)
 
 router.post("/updateprofile", profileScreenControllers.updateProfile_post)
+
+// Upade profile image
+
+router.post("/updateprofileimage", uploadProfileImage, profileScreenControllers.updateProfileImage_post)
+
 
 // Export the module
 
