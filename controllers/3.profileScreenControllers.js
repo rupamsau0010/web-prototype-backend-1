@@ -232,3 +232,16 @@ module.exports.deleteProfileImage_post = async(req, res) => {
         }
     })
 }
+
+module.exports.userPosts_post = async(req, res) => {
+    // Get data from req.params
+    
+    // Get Data from req.body
+    const userId = req.body.userId
+    const files = req.files
+
+    console.log(files);
+
+    // Will implement the code after doing any order... it will be see automatecally
+}
+

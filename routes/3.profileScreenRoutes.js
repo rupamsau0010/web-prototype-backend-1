@@ -8,6 +8,7 @@ const router = express.Router()
 
 const profileScreenControllers = require("../controllers/3.profileScreenControllers")
 const uploadProfileImage = require("../services/multerForProfileImage")
+const uploadUserPosts = require("../services/multerForUserPosts")
 
 // Follow or unfollow any user accout
 
@@ -24,6 +25,10 @@ router.post("/updateprofileimage", uploadProfileImage, profileScreenControllers.
 // Delete the user's profile image
 
 router.post("/deleteprofileimage", profileScreenControllers.deleteProfileImage_post)
+
+// create user Posts
+
+router.post("/userposts", uploadUserPosts, profileScreenControllers.userPosts_post)
 
 
 // Export the module
