@@ -77,7 +77,7 @@ module.exports.shiftToBusiness_post = async (req, res) => {
             if (businessUser) {
               User.findOneAndUpdate(
                 { _id: mainUserId },
-                { image: businessImg, profileType: "business" },
+                { image: businessImg, profileType: "business", displayName: businessName },
                 function (err1, data1) {
                   if (!err1) {
                     res.json({
