@@ -215,7 +215,7 @@ module.exports.deleteProfileImage_post = async(req, res) => {
     // Get data from req.body
     const userId = req.body.userId
 
-    const sampleImage = "https://salt-ecosystem-web-1.s3.ap-south-1.amazonaws.com/businessUserImages/generalProfileImage.PNG"
+    const sampleImage = "https://salt-ecosystem-web-1.s3.ap-south-1.amazonaws.com/generalProfileImage.PNG"
 
     // Find the user and delete the profile image(update to sample Image)
     User.findByIdAndUpdate({_id: userId}, {image: sampleImage}, {new: true}, function(err1, data1){
