@@ -14,6 +14,8 @@ module.exports.updateBusinessImage_post = async(req, res) => {
     const userId = req.body.userId
     const item = req.file
 
+    console.log(userId);
+
     // Find the user in the database
     const user = await User.findById({_id: userId })
     
@@ -75,6 +77,42 @@ module.exports.updateBusinessImage_post = async(req, res) => {
             res.json({
                 status: "failure",
                 payload: "Opps...Something happened wrong"
+            })
+        }
+    })
+}
+
+// Upade business details(all except business image)
+
+module.exports.updateBusinessDetails_post = async(req, res) => {
+    // Get details from req.params
+
+    // Get details from req.body
+    const userId = req.body.userId
+
+    // Get the details from the form
+    let businessName = req.body.businessName;
+    let businessOwnerName = req.body.businessOwnerName;
+    let businessOwnerPhoneNo = req.body.businessOwnerPhoneNo;
+    let ownerAddressPincode = req.body.ownerAddressPincode;
+    let ownerAddressState = req.body.ownerAddressState;
+    let businessType = req.body.businessType;
+    let shippingPincodes = req.body.shippingPincodes;
+    let paymentUPIId = req.body.paymentUPIId;
+
+    // Update the businessUser details
+    BusinessUser.findOneAndUpdate({mainUserId: userId}, {businessName: businessName, businessOwnerName: businessOwnerName, businessOwnerPhoneNo: businessOwnerPhoneNo, ownerAddressPincode: ownerAddressPincode, ownerAddressState: ownerAddressState, businessType: businessType, shippingPincodes: shippingPincodes, paymentUPIId: paymentUPIId}, {new: true}, async function(err1, data1){
+        console.log(data1);
+        if(data1) {
+            console.log(data1);
+            res.json({
+                status: "success",
+                payload: data1
+            })
+        } else {
+            res.json({
+                status: "failure",
+                payload: null
             })
         }
     })
