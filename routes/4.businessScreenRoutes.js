@@ -8,6 +8,7 @@ const router = express.Router()
 
 const businessScreenControllers = require("../controllers/4.businessScreenControllers")
 const uploadProfileImage = require("../services/multerForProfileImage")
+const uploadUserPosts = require("../services/multerForUserPosts")
 
 // Update the business user details(image)
 /// Besically using uploadProfileImage multer configuration for uploading single image in all the condition
@@ -16,6 +17,10 @@ router.post("/updatebusinessimage", uploadProfileImage,  businessScreenControlle
 // Update the business user details(except image)
 
 router.post("/updatebusinessdetails", businessScreenControllers.updateBusinessDetails_post)
+
+// Create a business post
+/// Besically using uploadUserPosts multer configuration for uploading multiple img files at a same time
+router.post("/createbusinesspost", uploadUserPosts, businessScreenControllers.createBusinessPost_post)
 
 // Export the router
 

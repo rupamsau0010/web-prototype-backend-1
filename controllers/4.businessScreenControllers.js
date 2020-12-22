@@ -1,119 +1,297 @@
-// Import dependancies 
+// Import dependancies
 const { v4: uuidv4 } = require("uuid");
 
 // Import Local dependancies
-const User = require("../models/Users")
-const BusinessUser = require("../models/BusinessUserDetails")
-const s3 = require("../services/aws-S3")
+const User = require("../models/Users");
+const BusinessUser = require("../models/BusinessUserDetails");
+const s3 = require("../services/aws-S3");
+const Product = require("../models/Products");
+const ProductCount = require("../models/productCounts");
 
 // Update the details of the business accout(only business image)
-module.exports.updateBusinessImage_post = async(req, res) => {
-    // Get details from req.params
+module.exports.updateBusinessImage_post = async (req, res) => {
+  // Get details from req.params
 
-    // Get details from req.body
-    const userId = req.body.userId
-    const item = req.file
+  // Get details from req.body
+  const userId = req.body.userId;
+  const item = req.file;
 
-    console.log(userId);
+  console.log(userId);
 
-    // Find the user in the database
-    const user = await User.findById({_id: userId })
-    
-    // Get the existing image url
-    existingImageUrl = user.image
+  // Find the user in the database
+  const user = await User.findById({ _id: userId });
 
-    const imgName = existingImageUrl.split("/")[4]
+  // Get the existing image url
+  existingImageUrl = user.image;
 
-    s3.deleteObject({
-        Bucket: process.env.AWS_BUCKET_NAME,
-        Key: `businessUserImages/${imgName}`
-    },function (err,data){
-        if(!err) {
-                
-            let myFile1 = item.originalname.split(".");
-            const fileType1 = myFile1[myFile1.length - 1];
+  const imgName = existingImageUrl.split("/")[4];
 
-            var params = {
-                Bucket: process.env.AWS_BUCKET_NAME,
-                ContentType: "image/jpg",
-                Key: `businessUserImages/${uuidv4()}.${fileType1}`,
-                Body: item.buffer,
-            }
+  s3.deleteObject(
+    {
+      Bucket: process.env.AWS_BUCKET_NAME,
+      Key: `businessUserImages/${imgName}`,
+    },
+    function (err, data) {
+      if (!err) {
+        let myFile1 = item.originalname.split(".");
+        const fileType1 = myFile1[myFile1.length - 1];
 
-            s3.upload(params, function (err1, data1) {
-                if (err1) {
-                    res.json({
-                        status: "failure",
-                        payload: "Opps...Something happened wrong"
-                    })
-                } else {
+        var params = {
+          Bucket: process.env.AWS_BUCKET_NAME,
+          ContentType: "image/jpg",
+          Key: `businessUserImages/${uuidv4()}.${fileType1}`,
+          Body: item.buffer,
+        };
 
-                    User.findByIdAndUpdate({_id: userId}, {image: data1.Location}, {new: true}, async function(err2, data2){
-                        if(data2) {
-                            BusinessUser.findOneAndUpdate({mainUserId: userId}, {businessImg: data1.Location}, {new: true}, async function(err3, data3){
-                                if(data3) {
-                                    res.json({
-                                        status: "success",
-                                        payload: data2.image
-                                    })
-                                } else {
-                                    res.json({
-                                        status: "failure",
-                                        payload: "Opps...Something happened wrong"
-                                    })
-                                }
-                            })
-                        } else {
-                            res.json({
-                                status: "failure",
-                                payload: "Opps...Something happened wrong"
-                            })
-                        }
-                    })
-                }
-            })
-        }
-        else {
+        s3.upload(params, function (err1, data1) {
+          if (err1) {
             res.json({
-                status: "failure",
-                payload: "Opps...Something happened wrong"
-            })
-        }
-    })
-}
+              status: "failure",
+              payload: "Opps...Something happened wrong",
+            });
+          } else {
+            User.findByIdAndUpdate(
+              { _id: userId },
+              { image: data1.Location },
+              { new: true },
+              async function (err2, data2) {
+                if (data2) {
+                  BusinessUser.findOneAndUpdate(
+                    { mainUserId: userId },
+                    { businessImg: data1.Location },
+                    { new: true },
+                    async function (err3, data3) {
+                      if (data3) {
+                        res.json({
+                          status: "success",
+                          payload: data2.image,
+                        });
+                      } else {
+                        res.json({
+                          status: "failure",
+                          payload: "Opps...Something happened wrong",
+                        });
+                      }
+                    }
+                  );
+                } else {
+                  res.json({
+                    status: "failure",
+                    payload: "Opps...Something happened wrong",
+                  });
+                }
+              }
+            );
+          }
+        });
+      } else {
+        res.json({
+          status: "failure",
+          payload: "Opps...Something happened wrong",
+        });
+      }
+    }
+  );
+};
 
 // Upade business details(all except business image)
 
-module.exports.updateBusinessDetails_post = async(req, res) => {
-    // Get details from req.params
+module.exports.updateBusinessDetails_post = async (req, res) => {
+  // Get details from req.params
 
-    // Get details from req.body
-    const userId = req.body.userId
+  // Get details from req.body
+  const userId = req.body.userId;
 
-    // Get the details from the form
-    let businessName = req.body.businessName;
-    let businessOwnerName = req.body.businessOwnerName;
-    let businessOwnerPhoneNo = req.body.businessOwnerPhoneNo;
-    let ownerAddressPincode = req.body.ownerAddressPincode;
-    let ownerAddressState = req.body.ownerAddressState;
-    let businessType = req.body.businessType;
-    let shippingPincodes = req.body.shippingPincodes;
-    let paymentUPIId = req.body.paymentUPIId;
+  // Get the details from the form
+  let businessName = req.body.businessName;
+  let businessOwnerName = req.body.businessOwnerName;
+  let businessOwnerPhoneNo = req.body.businessOwnerPhoneNo;
+  let ownerAddressPincode = req.body.ownerAddressPincode;
+  let ownerAddressState = req.body.ownerAddressState;
+  let businessType = req.body.businessType;
+  let shippingPincodes = req.body.shippingPincodes;
+  let paymentUPIId = req.body.paymentUPIId;
 
-    // Update the businessUser details
-    BusinessUser.findOneAndUpdate({mainUserId: userId}, {businessName: businessName, businessOwnerName: businessOwnerName, businessOwnerPhoneNo: businessOwnerPhoneNo, ownerAddressPincode: ownerAddressPincode, ownerAddressState: ownerAddressState, businessType: businessType, shippingPincodes: shippingPincodes, paymentUPIId: paymentUPIId}, {new: true}, async function(err1, data1){
+  // Update the businessUser details
+  BusinessUser.findOneAndUpdate(
+    { mainUserId: userId },
+    {
+      businessName: businessName,
+      businessOwnerName: businessOwnerName,
+      businessOwnerPhoneNo: businessOwnerPhoneNo,
+      ownerAddressPincode: ownerAddressPincode,
+      ownerAddressState: ownerAddressState,
+      businessType: businessType,
+      shippingPincodes: shippingPincodes,
+      paymentUPIId: paymentUPIId,
+    },
+    { new: true },
+    async function (err1, data1) {
+      console.log(data1);
+      if (data1) {
         console.log(data1);
-        if(data1) {
-            console.log(data1);
-            res.json({
-                status: "success",
-                payload: data1
-            })
+        res.json({
+          status: "success",
+          payload: data1,
+        });
+      } else {
+        res.json({
+          status: "failure",
+          payload: null,
+        });
+      }
+    }
+  );
+};
+
+// Create a business post
+
+module.exports.createBusinessPost_post = async (req, res) => {
+  // Get data from req.params
+
+  // Get the data from req.body
+  const userId = req.body.userId;
+
+  const name = req.body.name;
+  const brandNameOrShopName = req.body.brandNameOrShopName;
+  const catagory = req.body.catagory;
+  const tagline = req.body.tagline;
+  const file = req.files;
+  const price = req.body.price;
+  const size = req.body.size;
+  const color = req.body.color;
+  const uniqueCode = "";
+  const inStock = req.body.inStock === "true";
+  const deliveryAtSingleTime = req.body.deliveryAtSingleTime;
+  const timeOfDelivery = req.body.timeOfDelivery;
+  const description = req.body.description;
+
+  var newDescription = [];
+  for (i = 0; i < description.length; i++) {
+    newDescription.push(JSON.parse(description[i]));
+  }
+
+  // Function for product Unique code generation
+  function generateUniqueCode(type) {
+    const id = "5fe183681f6e5b811e1a6220";
+
+    const typeForm = type.substr(0, 3);
+
+    const typeFormUpper = typeForm.toUpperCase();
+    ProductCount.findByIdAndUpdate(
+      { _id: id },
+      { $inc: { [typeForm]: 1 } },
+      function (err1, data1) {
+        if (data1) {
+          const returnData = typeFormUpper + String(data1[typeForm]);
+          return returnData;
         } else {
-            res.json({
-                status: "failure",
-                payload: null
-            })
+          return 0;
         }
-    })
-}
+      }
+    );
+  }
+
+  // First Check the user is a business user or not
+  const businessUser = await User.findById({ _id: userId });
+
+  if (businessUser.profileType === "business") {
+    // Upload the images of the product to aws s3
+    s3.createBucket(function () {
+      // Where you want to store your links after successfully uploading to AWS s3 bucket
+      var ResponseData = [];
+
+      file.map((item) => {
+        let myFile1 = item.originalname.split(".");
+        const fileType1 = myFile1[myFile1.length - 1];
+
+        var params = {
+          Bucket: process.env.AWS_BUCKET_NAME,
+          ContentType: "image/jpg",
+          Key: `businessPosts/${uuidv4()}.${fileType1}`,
+          Body: item.buffer,
+        };
+
+        s3.upload(params, function (err, data) {
+          if (err) {
+            res.json({ error: true, Message: err });
+          } else {
+            ResponseData.push(data.Location);
+
+            if (ResponseData.length == file.length) {
+              const id = "5fe183681f6e5b811e1a6220";
+
+              const typeForm = catagory.substr(0, 3);
+
+              const typeFormUpper = typeForm.toUpperCase();
+              ProductCount.findByIdAndUpdate(
+                { _id: id },
+                { $inc: { [typeForm]: 1 } },
+                function (err1, data1) {
+                  if (data1) {
+                    const returnData = typeFormUpper + String(data1[typeForm]);
+
+                    const product = new Product({
+                      name: name,
+                      brandNameOrShopName: brandNameOrShopName,
+                      catagory: catagory,
+                      tagline: tagline,
+                      postById: userId,
+                      image: ResponseData,
+                      price: price,
+                      size: size,
+                      color: color,
+                      uniqueCode: returnData,
+                      inStock: inStock,
+                      deliveryAtSingleTime: deliveryAtSingleTime,
+                      timeOfDelivery: timeOfDelivery,
+                      description: newDescription,
+                    });
+
+                    product.save((err1, data1) => {
+                      if (data1) {
+                        User.findByIdAndUpdate(
+                          { _id: userId },
+                          { $push: { businessPosts: data1._id } },
+                          function (err2, data2) {
+                            if (data2) {
+                              res.json({
+                                status: "success",
+                                payload: null,
+                              });
+                            } else {
+                              res.json({
+                                status: "failure",
+                                payload: "Opps...Something went wrong",
+                              });
+                            }
+                          }
+                        );
+                      } else {
+                        res.json({
+                          status: "failure",
+                          payload: null,
+                        });
+                      }
+                    });
+                  } else {
+                    res.json({
+                      status: "failure",
+                      payload: "Opps...Something went wrong",
+                    });
+                  }
+                }
+              );
+            } else {
+            }
+          }
+        });
+      });
+    });
+  } else {
+    res.json({
+      status: "failure",
+      payload: "You are not authorized to make a business post",
+    });
+  }
+};

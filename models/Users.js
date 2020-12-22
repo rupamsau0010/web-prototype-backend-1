@@ -38,6 +38,7 @@ const userSchema = new mongoose.Schema({
     },
     likedPost: [String],
     posts: [String],
+    businessPosts: [String],
     cart: [String],
     gender: {
         type: String,

@@ -53,7 +53,7 @@ const saveProduct = () => {
         ratingGivenBy: [null],
         numOfLike: 52,
         uniqueCode: "SHO001254",
-        numberInStock: 20,
+        inStock: true,
         deliveryAtSingleTime: 10,
         timeOfDelivery: 7,
         numberOfCalling: 0,
