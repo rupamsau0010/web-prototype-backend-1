@@ -22,6 +22,9 @@ router.post("/updatebusinessdetails", businessScreenControllers.updateBusinessDe
 /// Besically using uploadUserPosts multer configuration for uploading multiple img files at a same time
 router.post("/createbusinesspost", uploadUserPosts, businessScreenControllers.createBusinessPost_post)
 
+// Make a post as a out of stock
+router.post("/productstatus", businessScreenControllers.productStatusUpdate_post)
+
 // Export the router
 
 module.exports = router

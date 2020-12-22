@@ -295,3 +295,27 @@ module.exports.createBusinessPost_post = async (req, res) => {
     });
   }
 };
+
+// Make a product as out of stock
+
+module.exports.productStatusUpdate_post = async(req, res) => {
+  // Get data from req.params
+
+  // Get data from req.body
+  const userId = req.body.userId
+  const productId = req.body.productId
+
+  Product.findOneAndUpdate({_id: productId, postById: userId}, {inStock: false}, {new: true}, function(err1, data1){
+    if(data1) {
+      res.json({
+        status: "success",
+        payload: data1
+      })
+    } else {
+      res.json({
+        status: "failure",
+        payload: null
+      })
+    }
+  })
+}
