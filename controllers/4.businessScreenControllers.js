@@ -7,6 +7,7 @@ const BusinessUser = require("../models/BusinessUserDetails");
 const s3 = require("../services/aws-S3");
 const Product = require("../models/Products");
 const ProductCount = require("../models/productCounts");
+const { findOne } = require("../models/Users");
 
 // Update the details of the business accout(only business image)
 module.exports.updateBusinessImage_post = async (req, res) => {
@@ -362,14 +363,14 @@ module.exports.updateProductDetails_post = async (req, res) => {
     },
     { new: true },
     function (err1, data1) {
-        console.log(data1);
+      console.log(data1);
       if (data1) {
         res.json({
           status: "success",
           payload: data1,
         });
       } else {
-          console.log(err1);
+        console.log(err1);
         res.json({
           status: "failure",
           payload: null,
@@ -377,4 +378,60 @@ module.exports.updateProductDetails_post = async (req, res) => {
       }
     }
   );
+};
+
+// Delete a business post (product)
+
+module.exports.deleteProducts_post = async (req, res) => {
+  // Get details from req.params
+
+  // Get details from req.body
+  const userId = req.body.userId;
+  const productId = req.body.productId;
+
+  // Find the product
+  const product = await Product.findOne({ _id: productId, postById: userId });
+
+  const imageArray = product.image;
+  var count = 0
+  imageArray.map((item) => {
+    const imgName = item.split("/")[4];
+
+    s3.deleteObject(
+      {
+        Bucket: process.env.AWS_BUCKET_NAME,
+        Key: `businessPosts/${imgName}`,
+      },
+      function (err1, data1) {
+        if(data1) {
+          count += 1
+
+          if(count == imageArray.length) {
+            Product.findOneAndDelete({_id: productId, postById: userId}, function(err2, data2){
+              if(data2) {
+                User.findByIdAndUpdate({_id: userId}, {$pull: {"businessPosts": productId}}, {new: true}, function(err3, data3){
+                  if(data3) {
+                    res.json({
+                      status: "success",
+                      payload: data3
+                    })
+                  } else {
+                    res.json({
+                      status: "failure",
+                      payload: null
+                    })
+                  }
+                })
+              } else {
+                res.json({
+                  status: "failure",
+                  payload: null
+                })
+              }
+            })
+          }
+        } 
+      }
+    );
+  });
 };
