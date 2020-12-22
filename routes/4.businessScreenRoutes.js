@@ -25,6 +25,9 @@ router.post("/createbusinesspost", uploadUserPosts, businessScreenControllers.cr
 // Make a post as a out of stock
 router.post("/productstatus", businessScreenControllers.productStatusUpdate_post)
 
+// Update the business posts (products) details(without image)
+router.post("/updateproductdetails", businessScreenControllers.updateProductDetails_post)
+
 // Export the router
 
 module.exports = router

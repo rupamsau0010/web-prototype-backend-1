@@ -161,7 +161,7 @@ module.exports.createBusinessPost_post = async (req, res) => {
   const size = req.body.size;
   const color = req.body.color;
   const uniqueCode = "";
-  const inStock = req.body.inStock === "true";
+  const inStock = true;
   const deliveryAtSingleTime = req.body.deliveryAtSingleTime;
   const timeOfDelivery = req.body.timeOfDelivery;
   const description = req.body.description;
@@ -298,24 +298,83 @@ module.exports.createBusinessPost_post = async (req, res) => {
 
 // Make a product as out of stock
 
-module.exports.productStatusUpdate_post = async(req, res) => {
+module.exports.productStatusUpdate_post = async (req, res) => {
   // Get data from req.params
 
   // Get data from req.body
-  const userId = req.body.userId
-  const productId = req.body.productId
+  const userId = req.body.userId;
+  const productId = req.body.productId;
 
-  Product.findOneAndUpdate({_id: productId, postById: userId}, {inStock: false}, {new: true}, function(err1, data1){
-    if(data1) {
-      res.json({
-        status: "success",
-        payload: data1
-      })
-    } else {
-      res.json({
-        status: "failure",
-        payload: null
-      })
+  Product.findOneAndUpdate(
+    { _id: productId, postById: userId },
+    { inStock: false },
+    { new: true },
+    function (err1, data1) {
+      if (data1) {
+        res.json({
+          status: "success",
+          payload: data1,
+        });
+      } else {
+        res.json({
+          status: "failure",
+          payload: null,
+        });
+      }
     }
-  })
-}
+  );
+};
+
+// Upadete the product details(without images as images can't be updated)
+
+module.exports.updateProductDetails_post = async (req, res) => {
+  // Get data from req.params
+
+  // Get details from req.body
+  const userId = req.body.userId;
+  const productId = req.body.productId;
+
+  const name = req.body.name;
+  const brandNameOrShopName = req.body.brandNameOrShopName;
+  const catagory = req.body.catagory;
+  const tagline = req.body.tagline;
+  const price = req.body.price;
+  const size = req.body.size;
+  const color = req.body.color;
+  const deliveryAtSingleTime = req.body.deliveryAtSingleTime;
+  const timeOfDelivery = req.body.timeOfDelivery;
+  const description = req.body.description;
+
+  // Update the document
+  Product.findOneAndUpdate(
+    { _id: productId, postById: userId },
+    {
+      name: name,
+      brandNameOrShopName: brandNameOrShopName,
+      catagory: catagory,
+      tagline: tagline,
+      price: price,
+      size: size,
+      color: color,
+      deliveryAtSingleTime: deliveryAtSingleTime,
+      timeOfDelivery: timeOfDelivery,
+      description: description,
+    },
+    { new: true },
+    function (err1, data1) {
+        console.log(data1);
+      if (data1) {
+        res.json({
+          status: "success",
+          payload: data1,
+        });
+      } else {
+          console.log(err1);
+        res.json({
+          status: "failure",
+          payload: null,
+        });
+      }
+    }
+  );
+};
