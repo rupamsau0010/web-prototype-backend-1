@@ -9,7 +9,7 @@ const router = express.Router()
 const productControllers = require("../controllers/productControllers")
 const { requireAuth } = require("../middlewares/authMiddlewares")
 
-// Check out page (when buynow button or my cart button will be clicked)
+// My cart route before buying the products
 
 router.get("/mycartforcheckout", productControllers.myCartForCheckout_get)
 

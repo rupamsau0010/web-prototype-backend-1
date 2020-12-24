@@ -356,7 +356,7 @@ module.exports.addToCart_post = async (req, res) => {
   }
 };
 
-// Check out page (when buynow button or my cart button will be clicked)
+// My cart page before buying the products
 
 module.exports.myCartForCheckout_get = async (req, res) => {
   // Get data from req.params
