@@ -9,6 +9,10 @@ const router = express.Router()
 const productControllers = require("../controllers/productControllers")
 const { requireAuth } = require("../middlewares/authMiddlewares")
 
+// Check out page (when buynow button or my cart button will be clicked)
+
+router.get("/mycartforcheckout", productControllers.myCartForCheckout_get)
+
 // Get Particular product Route
 
 router.get("/:id", productControllers.product_get)
@@ -24,6 +28,8 @@ router.post("/:id/givelike", productControllers.giveLike_post)
 // Add to cart a particular product
 
 router.post("/:id/addtocart", productControllers.addToCart_post)
+
+
 
 // EXport the module
 

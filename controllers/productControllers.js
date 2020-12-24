@@ -54,9 +54,8 @@ module.exports.product_get = async (req, res) => {
 
     res.json({
       status: "success",
-      payload: [product, similarProducts, moreProducts]
-    })
-
+      payload: [product, similarProducts, moreProducts],
+    });
   } else {
     res.json({
       status: "failure",
@@ -229,19 +228,23 @@ module.exports.giveLike_post = async (req, res) => {
       { numOfLike: newLikes, numberOfCalling: numberOfCalling },
       function (err1, data1) {
         if (!err1) {
-          User.updateOne({ _id: userId }, {$push: {likedPost: productId}}, function(err2, data2){
-            if(!err2) {
-              res.json({
-                status: "success",
-                payload: null
-              })
-            } else {
-              res.json({
-                status: "failure",
-                payload: "Opps...something went wrong",
-              });
+          User.updateOne(
+            { _id: userId },
+            { $push: { likedPost: productId } },
+            function (err2, data2) {
+              if (!err2) {
+                res.json({
+                  status: "success",
+                  payload: null,
+                });
+              } else {
+                res.json({
+                  status: "failure",
+                  payload: "Opps...something went wrong",
+                });
+              }
             }
-          })
+          );
         } else {
           // console.log(2);
           res.json({
@@ -264,19 +267,23 @@ module.exports.giveLike_post = async (req, res) => {
       { numOfLike: newLikes, numberOfCalling: numberOfCalling },
       function (err1, data1) {
         if (!err1) {
-          User.updateOne({ _id: userId }, {$pull: {likedPost: productId}}, function(err2, data2){
-            if(!err2) {
-              res.json({
-                status: "success",
-                payload: null
-              })
-            } else {
-              res.json({
-                status: "failure",
-                payload: "Opps...something went wrong",
-              });
+          User.updateOne(
+            { _id: userId },
+            { $pull: { likedPost: productId } },
+            function (err2, data2) {
+              if (!err2) {
+                res.json({
+                  status: "success",
+                  payload: null,
+                });
+              } else {
+                res.json({
+                  status: "failure",
+                  payload: "Opps...something went wrong",
+                });
+              }
             }
-          })
+          );
         } else {
           res.json({
             status: "failure",
@@ -309,35 +316,73 @@ module.exports.addToCart_post = async (req, res) => {
   if (message === "add") {
     // Update the cart array of the user (addtocart)
 
-    User.updateOne({ _id: userId }, {$push: {cart: productId}}, function(err2, data2){
-
-      if(!err2) {
-        res.json({
-          status: "success",
-          payload: null
-        })
-      } else {
-        res.json({
-          status: "failure",
-          payload: "Opps...something went wrong",
-        });
+    User.updateOne(
+      { _id: userId },
+      { $push: { cart: productId } },
+      function (err2, data2) {
+        if (!err2) {
+          res.json({
+            status: "success",
+            payload: null,
+          });
+        } else {
+          res.json({
+            status: "failure",
+            payload: "Opps...something went wrong",
+          });
+        }
       }
-    })
+    );
   } else if (message === "remove") {
     // Update the cart array of the user (removefromthecart)
 
-    User.updateOne({ _id: userId }, {$pull: {cart: productId}}, function(err2, data2){
-      if(!err2) {
-        res.json({
-          status: "success",
-          payload: null
-        })
-      } else {
-        res.json({
-          status: "failure",
-          payload: "Opps...something went wrong",
-        });
+    User.updateOne(
+      { _id: userId },
+      { $pull: { cart: productId } },
+      function (err2, data2) {
+        if (!err2) {
+          res.json({
+            status: "success",
+            payload: null,
+          });
+        } else {
+          res.json({
+            status: "failure",
+            payload: "Opps...something went wrong",
+          });
+        }
       }
+    );
+  }
+};
+
+// Check out page (when buynow button or my cart button will be clicked)
+
+module.exports.myCartForCheckout_get = async (req, res) => {
+  // Get data from req.params
+
+  // Get data from req.body
+  const userId = req.body.userId;
+
+  // Find the user Data first
+  const user = await User.findById(userId);
+
+  let i = 0;
+  var payload = []
+  for (i = 0; i < user.cart.length; i++) {
+    const product = await Product.findById({_id: user.cart[i]})
+    payload.push(product)
+  }
+  if(payload.length != 0) {
+    res.json({
+      status: "success",
+      payload: payload
+    })
+  } else {
+    res.json({
+      status: "failure",
+      payload: null
     })
   }
+  // Check all the data has been fetched or not
 };
