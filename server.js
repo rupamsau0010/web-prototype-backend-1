@@ -27,6 +27,7 @@ const businessScreenRoutes = require("./routes/4.businessScreenRoutes")
 // const inputProduct = require("./temp/inputProducts")
 // const inputUserPost = require("./temp/inputUserPosts")
 // const inputComment = require("./temp/inputComments")
+// const inputOrder = require("./temp/inputOrders")
 
 
 // Middlewares for express
@@ -107,6 +108,8 @@ app.use("/businessscreen", businessScreenRoutes)
 // inputUserPost() // For demo user input entry
 
 // inputComment() // For demo comment entry
+
+// inputOrder()  // For demo order entry
 
 //---------------------------------------------------------------//
 
