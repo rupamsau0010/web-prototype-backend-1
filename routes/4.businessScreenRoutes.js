@@ -34,6 +34,9 @@ router.post("/deleteproduct", businessScreenControllers.deleteProducts_post)
 // Get my orders
 router.get("/myorders", businessScreenControllers.seeOrders_get)
 
+// Mark any order as delivered
+router.post("/markasdelivered/:orderId", businessScreenControllers.markAsdelivered_post)
+
 // Export the router
 
 module.exports = router

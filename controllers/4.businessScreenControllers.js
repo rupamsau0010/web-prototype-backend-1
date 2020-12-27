@@ -7,7 +7,7 @@ const BusinessUser = require("../models/BusinessUserDetails");
 const s3 = require("../services/aws-S3");
 const Product = require("../models/Products");
 const ProductCount = require("../models/productCounts");
-const Order = require("../models/Orders")
+const Order = require("../models/Orders");
 const { findOne } = require("../models/Users");
 
 // Update the details of the business accout(only business image)
@@ -446,7 +446,8 @@ module.exports.deleteProducts_post = async (req, res) => {
   });
 };
 
-// See my orders
+// See all my orders(all orders of a business user)
+
 module.exports.seeOrders_get = async (req, res) => {
   // get data from req.params
 
@@ -457,26 +458,56 @@ module.exports.seeOrders_get = async (req, res) => {
   const businessUser = await BusinessUser.findOne({ mainUserId: userId });
 
   var i = 0;
-  var myOrders = []
-  for(i=0; i<businessUser.orders.length; i++) {
-    const order = await Order.findById({_id: businessUser.orders[i]})
-    myOrders.push(order)
+  var myOrders = [];
+  for (i = 0; i < businessUser.orders.length; i++) {
+    const order = await Order.findById({ _id: businessUser.orders[i] });
+    myOrders.push(order);
 
-    if(i == (businessUser.orders.length - 1) && myOrders.length >= 0) {
+    if (i == businessUser.orders.length - 1 && myOrders.length >= 0) {
       console.log(myOrders);
       res.json({
         status: "success",
-        payload: myOrders
-      })
-    } else if(i == (businessUser.orders.length - 1) && myOrders.length == 0) {
+        payload: myOrders,
+      });
+    } else if (i == businessUser.orders.length - 1 && myOrders.length == 0) {
       res.json({
         status: "success",
-        payload: "You don't have any order still now"
-      })
+        payload: "You don't have any order still now",
+      });
     }
   }
   res.json({
     status: "failure",
-    payload: "Opps...Something happened wrong. Please try again later"
-  })
+    payload: "Opps...Something happened wrong. Please try again later",
+  });
+};
+
+// Mark an order as dekivered
+
+module.exports.markAsdelivered_post = async (req, res) => {
+  // Get data fro req.params
+  const orderId = req.params.orderId;
+
+  // Get data from req.body
+  const userId = req.body.userId;
+
+  // Find the order and change the status
+  Order.findOneAndUpdate(
+    { _id: orderId, productById: userId },
+    { delivered: true },
+    { new: true },
+    function (err1, data1) {
+      if (data1 && !err1) {
+        res.json({
+          status: "success",
+          payload: data1,
+        });
+      } else {
+        res.json({
+          status: "failure",
+          payload: "Opps...Something happened wrong. Please try again later",
+        });
+      }
+    }
+  );
 };
