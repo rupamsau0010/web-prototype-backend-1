@@ -18,7 +18,6 @@ const userSchema = new mongoose.Schema({
     },
     image: {
         type: String,
-
     },
     profileType: {
         type: String,
@@ -40,6 +39,7 @@ const userSchema = new mongoose.Schema({
     posts: [String],
     businessPosts: [String],
     cart: [String],
+    orders: [String],
     gender: {
         type: String,
         default: null

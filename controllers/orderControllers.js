@@ -4,6 +4,8 @@ const { v4: uuidv4 } = require("uuid");
 // Import local depandencies
 const User = require("../models/Users");
 const Product = require("../models/Products");
+const BusinessUser = require("../models/BusinessUserDetails");
+const Order = require("../models/Orders");
 const razorpay = require("../services/razorpaysdk");
 
 module.exports.preOrderAddress_post = async (req, res) => {
@@ -41,6 +43,7 @@ module.exports.preOrderAddress_post = async (req, res) => {
   );
 };
 
+// Razorpay api for payment for any particular product
 module.exports.razorpay_post = async (req, res) => {
   // Get data from req.params
 
@@ -55,36 +58,65 @@ module.exports.razorpay_post = async (req, res) => {
   // Remove the item from the cart(if it was)
   User.findByIdAndUpdate(
     { _id: userId },
-    { $pull: { cart: productId } },
+    { $pull: { cart: productId }, $push: { orders: productId } },
     { new: true },
-    function (err1, data1) {
+    async function (err1, data1) {
       if (data1 && !err1) {
-        const payment_capture = 1;
-        const amount = price;
-        const currency = "INR";
-  
-        const options = {
-          amount: amount * 100,
-          currency,
-          receipt: uuidv4(),
-          payment_capture,
-        };
-  
-        try {
-          const response = await razorpay.orders.create(options);
-          console.log(response);
-  
-          res.json({
-            id: response.id,
-            currency: response.currency,
-            amount: response.amount,
-          });
-        } catch (error) {
-          console.log(error);
-        }
+        BusinessUser.findOneAndUpdate(
+          { mainUserId: product.postById },
+          { $push: { orders: productId } },
+          { new: true },
+          async function (err2, data2) {
+            if (data2 && !err2) {
+              const payment_capture = 1;
+              const amount = price;
+              const currency = "INR";
+
+              const options = {
+                amount: amount * 100,
+                currency,
+                receipt: uuidv4(),
+                payment_capture,
+              };
+
+              try {
+                const response = await razorpay.orders.create(options);
+                console.log(response);
+
+                // Get the delivery date
+                var days = product.timeOfDelivery;
+                var date = new Date();
+                var res = date.getTime() + days * 24 * 60 * 60 * 1000;
+                date = new Date(res);
+
+                const order = new Order({
+                  userId: userId,
+                  productId: productId,
+                  productImg: product.image[0],
+                  productTitle: product.name,
+                  deliverBy: date,
+                  shippingAddress: data1.deliveryLandmark,
+                  shippingPincode: data1.deliveryPincode,
+                  phoneNo: data1.phoneNo,
+                  orderDetails: response,
+                });
+
+                order.save((err3, data3) => {
+                  if (data3 && !err3) {
+                    res.json({
+                      id: response.id,
+                      currency: response.currency,
+                      amount: response.amount,
+                    });
+                  }
+                });
+              } catch (error) {
+                console.log(error);
+              }
+            }
+          }
+        );
       }
     }
   );
 };
-
-

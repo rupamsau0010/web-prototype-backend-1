@@ -57,6 +57,11 @@ const businessUserDetailsSchema = new mongoose.Schema({
         type: String,
         required: true
     },    
+    orders: [String],
+    createdAt: {
+        type: Date,
+        default: Date.now
+    },
 })
 
 module.exports = mongoose.model("businessuserdetail", businessUserDetailsSchema)
