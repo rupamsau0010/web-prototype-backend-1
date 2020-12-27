@@ -31,6 +31,9 @@ router.post("/updateproductdetails", businessScreenControllers.updateProductDeta
 // Delete a business post(product)
 router.post("/deleteproduct", businessScreenControllers.deleteProducts_post)
 
+// Get my orders
+router.get("/myorders", businessScreenControllers.seeOrders_get)
+
 // Export the router
 
 module.exports = router

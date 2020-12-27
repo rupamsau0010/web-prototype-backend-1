@@ -7,6 +7,7 @@ const BusinessUser = require("../models/BusinessUserDetails");
 const s3 = require("../services/aws-S3");
 const Product = require("../models/Products");
 const ProductCount = require("../models/productCounts");
+const Order = require("../models/Orders")
 const { findOne } = require("../models/Users");
 
 // Update the details of the business accout(only business image)
@@ -394,7 +395,7 @@ module.exports.deleteProducts_post = async (req, res) => {
   const product = await Product.findOne({ _id: productId, postById: userId });
 
   const imageArray = product.image;
-  var count = 0
+  var count = 0;
   imageArray.map((item) => {
     const imgName = item.split("/")[4];
 
@@ -404,35 +405,78 @@ module.exports.deleteProducts_post = async (req, res) => {
         Key: `businessPosts/${imgName}`,
       },
       function (err1, data1) {
-        if(data1) {
-          count += 1
+        if (data1) {
+          count += 1;
 
-          if(count == imageArray.length) {
-            Product.findOneAndDelete({_id: productId, postById: userId}, function(err2, data2){
-              if(data2) {
-                User.findByIdAndUpdate({_id: userId}, {$pull: {"businessPosts": productId}}, {new: true}, function(err3, data3){
-                  if(data3) {
-                    res.json({
-                      status: "success",
-                      payload: data3
-                    })
-                  } else {
-                    res.json({
-                      status: "failure",
-                      payload: null
-                    })
-                  }
-                })
-              } else {
-                res.json({
-                  status: "failure",
-                  payload: null
-                })
+          if (count == imageArray.length) {
+            Product.findOneAndDelete(
+              { _id: productId, postById: userId },
+              function (err2, data2) {
+                if (data2) {
+                  User.findByIdAndUpdate(
+                    { _id: userId },
+                    { $pull: { businessPosts: productId } },
+                    { new: true },
+                    function (err3, data3) {
+                      if (data3) {
+                        res.json({
+                          status: "success",
+                          payload: data3,
+                        });
+                      } else {
+                        res.json({
+                          status: "failure",
+                          payload: null,
+                        });
+                      }
+                    }
+                  );
+                } else {
+                  res.json({
+                    status: "failure",
+                    payload: null,
+                  });
+                }
               }
-            })
+            );
           }
-        } 
+        }
       }
     );
   });
+};
+
+// See my orders
+module.exports.seeOrders_get = async (req, res) => {
+  // get data from req.params
+
+  // get data from req.body
+  const userId = req.body.userId;
+
+  // Get the businessUserDetails and send to the frontend
+  const businessUser = await BusinessUser.findOne({ mainUserId: userId });
+
+  var i = 0;
+  var myOrders = []
+  for(i=0; i<businessUser.orders.length; i++) {
+    const order = await Order.findById({_id: businessUser.orders[i]})
+    myOrders.push(order)
+
+    if(i == (businessUser.orders.length - 1) && myOrders.length >= 0) {
+      console.log(myOrders);
+      res.json({
+        status: "success",
+        payload: myOrders
+      })
+    } else if(i == (businessUser.orders.length - 1) && myOrders.length == 0) {
+      res.json({
+        status: "success",
+        payload: "You don't have any order still now"
+      })
+    }
+  }
+  res.json({
+    status: "failure",
+    payload: "Opps...Something happened wrong. Please try again later"
+  })
 };
