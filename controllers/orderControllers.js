@@ -94,6 +94,7 @@ module.exports.razorpay_post = async (req, res) => {
                   productId: productId,
                   productImg: product.image[0],
                   productTitle: product.name,
+                  paymentStatus: "requested",
                   deliverBy: date,
                   shippingAddress: data1.deliveryLandmark,
                   shippingPincode: data1.deliveryPincode,
@@ -119,4 +120,41 @@ module.exports.razorpay_post = async (req, res) => {
       }
     }
   );
+};
+
+// Razorpay webhooks(called by razorpay)
+module.exports.razorpayWebhook_post = async (req, res) => {
+  // do a validation
+  const secret = process.env.RAZORPAY_WEBHOOK_SECRET;
+
+  console.log(req.body);
+
+  const crypto = require("crypto");
+
+  const shasum = crypto.createHmac("sha256", secret);
+  shasum.update(JSON.stringify(req.body));
+  const digest = shasum.digest("hex");
+
+  console.log(digest, req.headers["x-razorpay-signature"]);
+
+  if (digest === req.headers["x-razorpay-signature"]) {
+    console.log("request is legit");
+    // process it
+    // Update the orders data and status
+    Order.findOneAndUpdate(
+      { id: req.body.payload.payment.entity.order_id },
+      { paymentStatus: "paid", orderDetails: req.body },
+      { new: true },
+      function (err1, data1) {
+        if (data1 && !err1) {
+          console.log("success");
+        } else {
+          console.log("failure");
+        }
+      }
+    );
+  } else {
+    // pass it
+  }
+  res.json({ status: "ok" });
 };

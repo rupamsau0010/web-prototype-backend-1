@@ -11,5 +11,8 @@ router.post("/updateaddress", orderControllers.preOrderAddress_post)
 // Get payment from the user
 router.post("/razorpay", orderControllers.razorpay_post)
 
+// Razorpay webhook(automatically called by razorpay afetr successful payment)
+router.post("/verification", orderControllers.razorpayWebhook_post)
+
 // Export the module
 module.exports = router

@@ -18,6 +18,10 @@ const orderSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    paymentStatus: {
+        type: String,
+        required: true
+    },
     deliverBy: {
         type: Date,
         required: true
