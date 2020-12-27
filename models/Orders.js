@@ -26,6 +26,10 @@ const orderSchema = new mongoose.Schema({
         type: Date,
         required: true
     },
+    delivered: {
+        type: Boolean,
+        default: false
+    },
     shippingAddress: {
         type: String,
         required: true
