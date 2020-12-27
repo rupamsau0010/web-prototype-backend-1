@@ -18,6 +18,10 @@ const orderSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    productById: {
+        type: String,
+        required: true
+    },
     paymentStatus: {
         type: String,
         required: true
@@ -42,7 +46,10 @@ const orderSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    orderDetails: {Object},
+    orderDetails: {
+        type: Object,
+        required: true
+    },
     createdAt: {
         type: Date,
         default: Date.now

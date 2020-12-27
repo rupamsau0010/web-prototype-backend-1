@@ -44,6 +44,8 @@ module.exports.preOrderAddress_post = async (req, res) => {
 };
 
 // Razorpay api for payment for any particular product
+// Unchecked API(must be checked after frontend is ready)
+
 module.exports.razorpay_post = async (req, res) => {
   // Get data from req.params
 
@@ -55,74 +57,61 @@ module.exports.razorpay_post = async (req, res) => {
   const product = await Product.findById({ _id: productId });
   const price = product.price;
 
-  // Remove the item from the cart(if it was)
-  User.findByIdAndUpdate(
-    { _id: userId },
-    { $pull: { cart: productId }, $push: { orders: productId } },
-    { new: true },
-    async function (err1, data1) {
+  // Get the user data
+  const user = await User.findById({ _id: userId });
+
+  const payment_capture = 1;
+  const amount = price;
+  const currency = "INR";
+
+  const options = {
+    amount: amount * 100,
+    currency,
+    receipt: uuidv4(),
+    payment_capture,
+  };
+
+  try {
+    const response = await razorpay.orders.create(options);
+    console.log(response);
+
+    // Get the delivery date
+    var days = product.timeOfDelivery;
+    var date = new Date();
+    var res = date.getTime() + days * 24 * 60 * 60 * 1000;
+    date = new Date(res);
+
+    const order = new Order({
+      userId: userId,
+      productId: productId,
+      productImg: product.image[0],
+      productTitle: product.name,
+      productById: product.postById,
+      paymentStatus: "requested",
+      deliverBy: date,
+      shippingAddress: user.deliveryLandmark,
+      shippingPincode: user.deliveryPincode,
+      phoneNo: user.phoneNo,
+      orderDetails: response,
+    });
+
+    order.save((err1, data1) => {
       if (data1 && !err1) {
-        BusinessUser.findOneAndUpdate(
-          { mainUserId: product.postById },
-          { $push: { orders: productId } },
-          { new: true },
-          async function (err2, data2) {
-            if (data2 && !err2) {
-              const payment_capture = 1;
-              const amount = price;
-              const currency = "INR";
-
-              const options = {
-                amount: amount * 100,
-                currency,
-                receipt: uuidv4(),
-                payment_capture,
-              };
-
-              try {
-                const response = await razorpay.orders.create(options);
-                console.log(response);
-
-                // Get the delivery date
-                var days = product.timeOfDelivery;
-                var date = new Date();
-                var res = date.getTime() + days * 24 * 60 * 60 * 1000;
-                date = new Date(res);
-
-                const order = new Order({
-                  userId: userId,
-                  productId: productId,
-                  productImg: product.image[0],
-                  productTitle: product.name,
-                  paymentStatus: "requested",
-                  deliverBy: date,
-                  shippingAddress: data1.deliveryLandmark,
-                  shippingPincode: data1.deliveryPincode,
-                  phoneNo: data1.phoneNo,
-                  orderDetails: response,
-                });
-
-                order.save((err3, data3) => {
-                  if (data3 && !err3) {
-                    res.json({
-                      id: response.id,
-                      currency: response.currency,
-                      amount: response.amount,
-                    });
-                  }
-                });
-              } catch (error) {
-                console.log(error);
-              }
-            }
-          }
-        );
+        res.json({
+          id: response.id,
+          currency: response.currency,
+          amount: response.amount,
+        });
       }
-    }
-  );
+    });
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 // Razorpay webhooks(called by razorpay)
+// Unchecked API(must be checked after frontend is ready)
+
 module.exports.razorpayWebhook_post = async (req, res) => {
   // do a validation
   const secret = process.env.RAZORPAY_WEBHOOK_SECRET;
@@ -147,7 +136,29 @@ module.exports.razorpayWebhook_post = async (req, res) => {
       { new: true },
       function (err1, data1) {
         if (data1 && !err1) {
-          console.log("success");
+          User.findByIdAndUpdate(
+            { _id: data1.userId },
+            { $pull: { cart: data1.productId }, $push: { orders: data1._id } },
+            { new: true },
+            function (err2, data2) {
+              if (data2 && !err2) {
+                BusinessUser.findByIdAndUpdate(
+                  { _id: data1.productById },
+                  { $push: { orders: data1._id } },
+                  { new: true },
+                  function (err3, data3) {
+                    if (data3 && !err3) {
+                      console.log("success");
+                    } else {
+                      console.log("faliure");
+                    }
+                  }
+                );
+              } else {
+                console.log("failure");
+              }
+            }
+          );
         } else {
           console.log("failure");
         }

@@ -9,7 +9,7 @@ const Order = require("../models/Orders")
 
 // Order details
 const orderDetails = {
-    _id: "something",
+    bsf: "something",
     order_card: "another something"
 }
 
@@ -19,6 +19,7 @@ const saveOrder = () => {
         productId: "5fe8399fbcc8a021c8958f4b",
         productImg: "https://salt-ecosystem-web-1.s3.amazonaws.com/businessPosts/1f7473b3-2d13-4ecc-81ba-ef20ad5543c5.jpg",
         productTitle: "xyz",
+        productById: "5fbce458ab4372504810b467",
         paymentStatus: "paid",
         deliverBy: Date.now(),
         shippingAddress: "purba jagg put",
