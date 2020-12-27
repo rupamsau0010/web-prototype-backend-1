@@ -446,6 +446,47 @@ module.exports.deleteProducts_post = async (req, res) => {
   });
 };
 
+// Find all the products posted by any business user
+
+module.exports.findAllProducts_get = async (req, res) => {
+  // Get data from req.params
+
+  // Get data from req.body
+  const userId = req.body.userId;
+
+  // Get all the products posted by the business User
+  const user = await User.findById({ _id: userId });
+
+  var i = 0,
+    allProducts = [];
+  for (i = 0; i < user.businessPosts.length; i++) {
+    const product = await Product.findById({ _id: user.businessPosts[i] });
+    allProducts.push(product);
+
+    if (i == user.businessPosts.length - 1 && allProducts.length > 0) {
+      res.json({
+        status: "success",
+        payload: allProducts,
+      });
+    } else if (i == user.businessPosts.length - 1 && allProducts.length == 0) {
+      res.json({
+        status: "success",
+        payload: "You don't have any product posted right now.",
+      });
+    } else {
+      res.json({
+        status: "failure",
+        payload: "Opps...Something happened wrong. Please try again later",
+      });
+    }
+  }
+
+  res.json({
+    status: "failure",
+    payload: "Opps...Something happened wrong. Please try again later",
+  });
+};
+
 // See all my orders(all orders of a business user)
 
 module.exports.seeOrders_get = async (req, res) => {
@@ -463,7 +504,7 @@ module.exports.seeOrders_get = async (req, res) => {
     const order = await Order.findById({ _id: businessUser.orders[i] });
     myOrders.push(order);
 
-    if (i == businessUser.orders.length - 1 && myOrders.length >= 0) {
+    if (i == businessUser.orders.length - 1 && myOrders.length > 0) {
       console.log(myOrders);
       res.json({
         status: "success",

@@ -37,6 +37,9 @@ router.get("/myorders", businessScreenControllers.seeOrders_get)
 // Mark any order as delivered
 router.post("/markasdelivered/:orderId", businessScreenControllers.markAsdelivered_post)
 
+// Get all the products posted by any business User
+router.get("/myproducts", businessScreenControllers.findAllProducts_get)
+
 // Export the router
 
 module.exports = router
