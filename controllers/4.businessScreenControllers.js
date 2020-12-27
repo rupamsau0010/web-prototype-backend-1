@@ -234,6 +234,7 @@ module.exports.createBusinessPost_post = async (req, res) => {
 
                     const product = new Product({
                       name: name,
+                      postById: userId,
                       brandNameOrShopName: brandNameOrShopName,
                       catagory: catagory,
                       tagline: tagline,
