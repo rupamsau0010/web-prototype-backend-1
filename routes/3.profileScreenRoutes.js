@@ -34,6 +34,10 @@ router.post("/userposts", uploadUserPosts, profileScreenControllers.userPosts_po
 
 router.post("/updateuserpost/:userPostId", profileScreenControllers.updateUserPosts_post)
 
+// Delete an userPost
+
+router.post("/deleteuserpost/:userPostId", profileScreenControllers.deleteUserPosts_post)
+
 
 // Export the module
 

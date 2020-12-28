@@ -336,3 +336,28 @@ module.exports.updateUserPosts_post = async(req, res) => {
         }
     })
 }
+
+// Delete an userPost
+
+module.exports.deleteUserPosts_post = async(req, res) => {
+    // Get data from req.params
+    const userPostId = req.params.userPostId
+
+    // Get data from req.body
+    const userId = req.body.userId
+
+    // Delete the userPost
+    UserPost.findOneAndDelete({_id: userPostId, postById: userId}, function(err1, data1){
+        if(!err1 && data1) {
+            res.json({
+                status: "success",
+                payload: "Data deleted successfully"
+            })
+        } else {
+            res.json({
+                status: "failure",
+                payload: "Opps...Something went wrong"
+            })
+        }
+    })
+}
