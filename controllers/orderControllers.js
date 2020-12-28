@@ -134,11 +134,17 @@ module.exports.razorpayWebhook_post = async (req, res) => {
       { id: req.body.payload.payment.entity.order_id },
       { paymentStatus: "paid", orderDetails: req.body },
       { new: true },
-      function (err1, data1) {
+      async function (err1, data1) {
         if (data1 && !err1) {
+          const product = await Product.findById({ _id: data1.productId });
+
           User.findByIdAndUpdate(
             { _id: data1.userId },
-            { $pull: { cart: data1.productId }, $push: { orders: data1._id } },
+            {
+              $pull: { cart: data1.productId },
+              $push: { orders: data1._id },
+              $push: { orderUniqueCodes: product.uniqueCode },
+            },
             { new: true },
             function (err2, data2) {
               if (data2 && !err2) {

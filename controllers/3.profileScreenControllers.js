@@ -4,6 +4,8 @@ const { v4: uuidv4 } = require("uuid");
 // Import Local Depandencies
 
 const User = require("../models/Users");
+const Product = require("../models/Products")
+const UserPost = require("../models/UserPosts")
 const s3 = require("../services/aws-S3")
 
 // Follow or unfollow any user accout
@@ -238,10 +240,69 @@ module.exports.userPosts_post = async(req, res) => {
     
     // Get Data from req.body
     const userId = req.body.userId
-    const files = req.files
+    const file = req.files
+    const caption = req.body.caption
+    const originalProductRef = req.body.originalProductRef
 
-    console.log(files);
+    // Find the original product
+    const product = await Product.findOne({uniqueCode: originalProductRef})
+    const user = await User.findById({_id: userId})
 
+    // If the product has been ordered by the user
+    if(product && user.orderUniqueCodes.includes(product.uniqueCode)) {
+        s3.createBucket(function(){
+            var ResponseData = []
+            file.map((item) => {
+                let myFile1 = item.originalname.split(".");
+                const fileType1 = myFile1[myFile1.length - 1];
+        
+                var params = {
+                    Bucket: process.env.AWS_BUCKET_NAME,
+                    ContentType: "image/jpg",
+                    Key: `userPosts/${uuidv4()}.${fileType1}`,
+                    Body: item.buffer,
+                };
+        
+                s3.upload(params, function (err, data) {
+                    if (err) {
+                        res.json({ error: true, Message: err });
+                    } else {
+                        ResponseData.push(data.Location);
+        
+                        // Check all the images has been uploaded or not
+                        if (ResponseData.length == file.length) {
+                            const userPost = new UserPost({
+                                caption: caption,
+                                images: ResponseData,
+                                originalProductRef: originalProductRef,
+                                postById: userId,
+                                tagline: product.tagline
+                            })
+
+                            userPost.save((err1, data1) => {
+                                if(data1 && !err1) {
+                                    res.json({
+                                        status: "success",
+                                        payload: data1
+                                    })
+                                } else {
+                                    res.json({
+                                        status: "failure",
+                                        payload: "Opps...Something happened wrong"
+                                    })
+                                }
+                            })
+                        }
+                    }
+                })
+            })
+        })
+    } else {
+        res.json({
+            status: "failure",
+            payload: "Sorry...How can you show off your friends before buying the product. Please consider buying first"
+        })
+    }
     // Will implement the code after doing any order... it will be see automatecally
 }
 

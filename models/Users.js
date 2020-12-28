@@ -40,6 +40,7 @@ const userSchema = new mongoose.Schema({
     businessPosts: [String],
     cart: [String],
     orders: [String],
+    orderUniqueCodes: [String],
     gender: {
         type: String,
         default: null
