@@ -235,6 +235,8 @@ module.exports.deleteProfileImage_post = async(req, res) => {
     })
 }
 
+// Create an user Post
+
 module.exports.userPosts_post = async(req, res) => {
     // Get data from req.params
     
@@ -306,3 +308,31 @@ module.exports.userPosts_post = async(req, res) => {
     // Will implement the code after doing any order... it will be see automatecally
 }
 
+
+// Update an user post(without image as image can't be updated)
+
+module.exports.updateUserPosts_post = async(req, res) => {
+    // Get data from req.params
+    const userPostId = req.params.userPostId
+
+    // Get data from req.body
+    const userId = req.body.userId
+    const caption = req.body.caption
+
+    // Update the data
+    UserPost.findOneAndUpdate({_id: userPostId, postById: userId }, {caption: caption}, {new: true}, function(err1, data1){
+        if(!err1 && data1) {
+            res.json({
+                status: "success",
+                payload: data1
+            })
+        } else {
+            console.log(data1);
+            console.log(err1);
+            res.json({
+                status: "failure",
+                payload: "Opps...Something went wrong"
+            })
+        }
+    })
+}

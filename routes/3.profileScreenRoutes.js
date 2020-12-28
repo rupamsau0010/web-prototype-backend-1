@@ -30,6 +30,10 @@ router.post("/deleteprofileimage", profileScreenControllers.deleteProfileImage_p
 
 router.post("/userposts", uploadUserPosts, profileScreenControllers.userPosts_post)
 
+// Update an userPost
+
+router.post("/updateuserpost/:userPostId", profileScreenControllers.updateUserPosts_post)
+
 
 // Export the module
 
