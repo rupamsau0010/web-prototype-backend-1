@@ -457,34 +457,27 @@ module.exports.findAllProducts_get = async (req, res) => {
   // Get all the products posted by the business User
   const user = await User.findById({ _id: userId });
 
-  var i = 0,
+  var i = 0, count = 0
     allProducts = [];
   for (i = 0; i < user.businessPosts.length; i++) {
-    const product = await Product.findById({ _id: user.businessPosts[i] });
-    allProducts.push(product);
-
-    if (i == user.businessPosts.length - 1 && allProducts.length > 0) {
-      res.json({
-        status: "success",
-        payload: allProducts,
-      });
-    } else if (i == user.businessPosts.length - 1 && allProducts.length == 0) {
-      res.json({
-        status: "success",
-        payload: "You don't have any product posted right now.",
-      });
-    } else {
-      res.json({
-        status: "failure",
-        payload: "Opps...Something happened wrong. Please try again later",
-      });
-    }
+    Product.findById({_id: user.businessPosts[i]}, function(err1, data1){
+      count += 1
+      if(data1 && !err1) {
+        allProducts.push(data1)
+      } 
+      if(count == user.businessPosts.length && allProducts.length > 0) {
+        res.json({
+          status: "success",
+          payload: allProducts
+        })
+      } else if(count == user.businessPosts.length && allProducts.length <= 0) {
+        res.json({
+          status: "success",
+          payload: "You don;t have any producrts posted yet"
+        })
+      }
+    })
   }
-
-  res.json({
-    status: "failure",
-    payload: "Opps...Something happened wrong. Please try again later",
-  });
 };
 
 // See all my orders(all orders of a business user)
@@ -498,25 +491,27 @@ module.exports.seeOrders_get = async (req, res) => {
   // Get the businessUserDetails and send to the frontend
   const businessUser = await BusinessUser.findOne({ mainUserId: userId });
 
-  var i = 0, myOrders = [], count = 0;
+  var i = 0,
+    myOrders = [],
+    count = 0;
   for (i = 0; i < businessUser.orders.length; i++) {
-    Order.findById({_id: businessUser.orders[i]}, function(err1, data1){
-      count += 1
-      if(data1 && !err1) {
-        myOrders.push(data1)
-      } 
-      if(count == businessUser.orders.length && myOrders.length > 0) {
-        res.json({
-          status: "success",
-          payload: myOrders
-        })
-      } else if(count == businessUser.orders.length && myOrders.length <= 0) {
-        res.json({
-          status: "success",
-          payload: "You did't get any orders still now."
-        })
+    Order.findById({ _id: businessUser.orders[i] }, function (err1, data1) {
+      count += 1;
+      if (data1 && !err1) {
+        myOrders.push(data1);
       }
-    })
+      if (count == businessUser.orders.length && myOrders.length > 0) {
+        res.json({
+          status: "success",
+          payload: myOrders,
+        });
+      } else if (count == businessUser.orders.length && myOrders.length <= 0) {
+        res.json({
+          status: "success",
+          payload: "You did't get any orders still now.",
+        });
+      }
+    });
   }
 };
 
