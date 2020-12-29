@@ -361,3 +361,36 @@ module.exports.deleteUserPosts_post = async(req, res) => {
         }
     })
 }
+
+// Get the all the post in the user cart
+
+module.exports.myCart_get = async(req, res) => {
+    // Get data from req.params
+
+    // Get data from req.body
+    const userId = req.body.userId
+
+    // Get the user data
+    const user = await User.findById({_id: userId})
+
+    var i = 0, myCart = [], count = 0;
+    for(i=0; i<user.cart.length; i++) {
+        Product.findById({_id: user.cart[i]}, function(err1, data1){
+            count += 1
+            if(data1 && !err1) {
+                myCart.push(data1)
+            }
+            if(count == user.cart.length && myCart.length > 0) {
+                res.json({
+                    status: "success",
+                    payload: myCart
+                })
+            } else if(count == user.cart.length && myCart.length <= 0) {
+                res.json({
+                    status: "success",
+                    payload: "Your cart is empty"
+                })
+            }
+        })
+    }
+}

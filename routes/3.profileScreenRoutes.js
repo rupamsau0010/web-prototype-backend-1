@@ -38,6 +38,10 @@ router.post("/updateuserpost/:userPostId", profileScreenControllers.updateUserPo
 
 router.post("/deleteuserpost/:userPostId", profileScreenControllers.deleteUserPosts_post)
 
+// Get all the products from the user cart
+
+router.get("/mycart", profileScreenControllers.myCart_get)
+
 
 // Export the module
 
