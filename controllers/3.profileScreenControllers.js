@@ -6,6 +6,7 @@ const { v4: uuidv4 } = require("uuid");
 const User = require("../models/Users");
 const Product = require("../models/Products")
 const UserPost = require("../models/UserPosts")
+const Order = require("../models/Orders")
 const s3 = require("../services/aws-S3")
 
 // Follow or unfollow any user accout
@@ -389,6 +390,39 @@ module.exports.myCart_get = async(req, res) => {
                 res.json({
                     status: "success",
                     payload: "Your cart is empty"
+                })
+            }
+        })
+    }
+}
+
+// Get all the products from an user's order
+
+module.exports.myOder_get = async(req, res) => {
+    // Get data from req.params
+
+    // Get data from req.body
+    const userId = req.body.userId
+
+    // Get the user data
+    const user = await User.findById({_id: userId})
+
+    var i = 0, myOrders = [], count = 0;
+    for(i=0; i<user.orders.length; i++) {
+        Order.findById({_id: user.orders[i]}, function(err1, data1){
+            count += 1
+            if(data1 && !err1) {
+                myOrders.push(data1)
+            }
+            if(count == user.orders.length && myOrders.length > 0) {
+                res.json({
+                    status: "success",
+                    payload: myOrders
+                })
+            } else if(count == user.orders.length && myOrders.length <= 0) {
+                res.json({
+                    status: "success",
+                    payload: "You don't made any order still now."
                 })
             }
         })

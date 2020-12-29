@@ -42,6 +42,10 @@ router.post("/deleteuserpost/:userPostId", profileScreenControllers.deleteUserPo
 
 router.get("/mycart", profileScreenControllers.myCart_get)
 
+// Get all the orders from the user orders
+
+router.get("/myorder", profileScreenControllers.myOder_get)
+
 
 // Export the module
 
