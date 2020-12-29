@@ -498,29 +498,26 @@ module.exports.seeOrders_get = async (req, res) => {
   // Get the businessUserDetails and send to the frontend
   const businessUser = await BusinessUser.findOne({ mainUserId: userId });
 
-  var i = 0;
-  var myOrders = [];
+  var i = 0, myOrders = [], count = 0;
   for (i = 0; i < businessUser.orders.length; i++) {
-    const order = await Order.findById({ _id: businessUser.orders[i] });
-    myOrders.push(order);
-
-    if (i == businessUser.orders.length - 1 && myOrders.length > 0) {
-      console.log(myOrders);
-      res.json({
-        status: "success",
-        payload: myOrders,
-      });
-    } else if (i == businessUser.orders.length - 1 && myOrders.length == 0) {
-      res.json({
-        status: "success",
-        payload: "You don't have any order still now",
-      });
-    }
+    Order.findById({_id: businessUser.orders[i]}, function(err1, data1){
+      count += 1
+      if(data1 && !err1) {
+        myOrders.push(data1)
+      } 
+      if(count == businessUser.orders.length && myOrders.length > 0) {
+        res.json({
+          status: "success",
+          payload: myOrders
+        })
+      } else if(count == businessUser.orders.length && myOrders.length <= 0) {
+        res.json({
+          status: "success",
+          payload: "You did't get any orders still now."
+        })
+      }
+    })
   }
-  res.json({
-    status: "failure",
-    payload: "Opps...Something happened wrong. Please try again later",
-  });
 };
 
 // Mark an order as dekivered
