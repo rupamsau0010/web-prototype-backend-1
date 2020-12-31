@@ -37,3 +37,35 @@ module.exports.findUser_get = async(req, res) => {
         }
     })
 }
+
+// Delete any user based on the data provided(generalUserId or databaseUserId)
+module.exports.deleteUser_post = async(req, res) => {
+    // Get data from req.params
+
+    // Get the generalUserId or databaseUserId
+    // Get data from req.body
+    const userId = req.body.userId
+
+    User.findOneAndDelete({userName: userId}, function(err1, data1){
+        if(data1 && !err1) {
+            res.json({
+                status: "success",
+                payload: data1
+            })
+        } else if(!data1 && !err1) {
+            User.findByIdAndDelete({_id: userId}, function(err2, data2){
+                if(data2 && !err2) {
+                    res.json({
+                        status: "success",
+                        payload: data2
+                    })
+                } else {
+                    res.json({
+                        status: "failure",
+                        payload: "UserNot founf"
+                    })
+                }
+            })
+        }
+    })
+}
