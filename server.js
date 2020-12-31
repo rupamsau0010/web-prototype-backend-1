@@ -24,6 +24,7 @@ const orderRoutes = require("./routes/orderRoutes")
 const homeScreenRoutes = require("./routes/1.homeScreenRoutes")
 const profileScreenRoutes = require("./routes/3.profileScreenRoutes")
 const businessScreenRoutes = require("./routes/4.businessScreenRoutes")
+const adminRoutes = require("./routes/adminRoutes")
 // const inputProduct = require("./temp/inputProducts")
 // const inputUserPost = require("./temp/inputUserPosts")
 // const inputComment = require("./temp/inputComments")
@@ -97,6 +98,10 @@ app.use("/profilescreen", profileScreenRoutes)
 // Calling the business Screen
 
 app.use("/businessscreen", businessScreenRoutes)
+
+// Calling the admin routes
+
+app.use("/admin", adminRoutes)
 
 //---------------------------------------------------------------//
 
