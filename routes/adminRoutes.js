@@ -21,5 +21,12 @@ router.get("/findbusinessuser", adminControllers.findBusinessUser_get)
 // Get any products by databaseId or uniqueCode of the product
 router.get("/findbusinesspost", adminControllers.findBusinessPost_get)
 
+// Get all the business Posts done by any business user
+router.get("/findallbusinessposts", adminControllers.findAllBusinessPosts_get)
+
+// Convert the the databaseId to generalUserId(userName) or vice varsa
+router.get("/converids", adminControllers.convertids_get)
+
+
 // Export the module
 module.exports = router

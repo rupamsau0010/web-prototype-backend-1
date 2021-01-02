@@ -10,6 +10,7 @@ const UserPost = require("../models/UserPosts");
 const Comment = require("../models/Comments");
 const Product = require("../models/Products");
 const s3 = require("../services/aws-S3");
+const { route } = require("../routes/adminRoutes");
 
 // Get the user by generalUserId(googleId or facebookId; userName) or databaseUserId(userId or effective userId)
 module.exports.findUser_get = async (req, res) => {
@@ -155,6 +156,66 @@ module.exports.findAllUserPosts_get = async(req, res) => {
       res.json({
         status: "failure",
         payload: "Opps...something happened wrong"
+      })
+    }
+  })
+}
+
+// Get all the business post done by any user
+module.exports.findAllBusinessPosts_get = async(req, res) => {
+  // Get data from req.params
+
+  // Get the databaseUserId of any user
+  // Get data from req.body
+  const userId = req.body.userId;
+
+  Product.find({postById: userId}, function(err1, data1){
+    if(data1 && data1.length > 0 && !err1) {
+      res.json({
+        status: "success",
+        payload: data1
+      })
+    } else if(data1 && data1.length <= 0 && !err1) {
+      res.json({
+        status: "success",
+        payload: "This user doesnot posted any Product yet or User doesn't exists",
+      })
+    } else {
+      res.json({
+        status: "failure",
+        payload: "Opps...something happened wrong"
+      })
+    }
+  })
+}
+
+// Convert the the databaseId to generalUserId(userName) or vice varsa
+module.exports.convertids_get = async(req, res) => {
+  // Get data from req.params
+
+  // Get the databaseUserId of any user
+  // Get data from req.body
+  const userId = req.body.userId;
+
+  User.findOne({userName: userId}, function(err1, data1){
+    if(data1 && !err1) {
+      res.json({
+        status: "success",
+        payload: data1._id
+      })
+    } else if(!data1 && !err1) {
+      User.findById({_id: userId}, function(err2 ,data2){
+        if(data2 && !err2) {
+          res.json({
+            status: "success",
+            payload: data2.userName
+          })
+        } else {
+          res.json({
+            status: "failure",
+            payload: "User not found."
+          })
+        }
       })
     }
   })
