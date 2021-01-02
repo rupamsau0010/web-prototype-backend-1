@@ -30,5 +30,8 @@ router.get("/converids", adminControllers.convertids_get)
 // Delete any userPost by databaseId
 router.post("/deleteuserpost", adminControllers.deleteUserPost_post)
 
+// Delete any businessPost(product) by databaseId
+router.post("/deletebusinesspost", adminControllers.deleteBusinessPost_post)
+
 // Export the module
 module.exports = router

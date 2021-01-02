@@ -267,3 +267,49 @@ module.exports.deleteUserPost_post = async (req, res) => {
     }
   });
 };
+
+// Delete any businesspost done by any businessUser
+module.exports.deleteBusinessPost_post = async(req, res) => {
+  // Get data from req.params
+
+  // Get the generalUserId(not by usind databaseId)
+  // Get data from req.body
+  const productId = req.body.productId;
+
+  Product.findByIdAndDelete({ _id: productId }, function (err1, data1) {
+    if (data1 && !err1) {
+      var count = 0;
+      data1.image.map((item) => {
+        const imgName = item.split("/")[4];
+        s3.deleteObject(
+          {
+            Bucket: process.env.AWS_BUCKET_NAME,
+            Key: `businessPosts/${imgName}`,
+          },
+          function (err2, data2) {
+            if (data1) {
+              count += 1;
+
+              if (count == data1.image.length) {
+                res.json({
+                  status: "success",
+                  payload: "UserPost deleted successfully"
+                })
+              }
+            } else {
+              res.json({
+                status: "failure",
+                payload: "Opps...Something happened wrong."
+              })
+            }
+          }
+        );
+      });
+    } else {
+      res.json({
+        status: "failure",
+        payload: "Opps...Something happened wrong or Userpost couldn't be found"
+      })
+    }
+  });
+}
