@@ -79,144 +79,191 @@ module.exports.findBusinessUser_get = async (req, res) => {
 };
 
 // Get general userPost by databaseId or uniqueCo
-module.exports.findUserPost_get = async(req, res) => {
+module.exports.findUserPost_get = async (req, res) => {
   // Get data from req.params
 
   // Get the generalUserId(not by usind databaseId)
   // Get data from req.body
-  const userPostId = req.body.userPostId
+  const userPostId = req.body.userPostId;
 
-  UserPost.findById({_id: userPostId}, function(err1, data1){
-    if(data1 && !err1) {
+  UserPost.findById({ _id: userPostId }, function (err1, data1) {
+    if (data1 && !err1) {
       res.json({
         status: "success",
-        payload: data1
-      })
+        payload: data1,
+      });
     } else {
       res.json({
         status: "failure",
-        payload: "UserPost not found"
-      })
+        payload: "UserPost not found",
+      });
     }
-  })
-}
+  });
+};
 
 // Get products by the business users by databaseId(productId) or uniqueCode
-module.exports.findBusinessPost_get = async(req, res) => {
+module.exports.findBusinessPost_get = async (req, res) => {
   // Get data from req.params
 
   // Get the generalUserId(not by usind databaseId)
   // Get data from req.body
-  const id = req.body.id
+  const id = req.body.id;
 
-  Product.findOne({uniqueCode: id}, function(err1, data1){
-    if(data1 && !err1) {
+  Product.findOne({ uniqueCode: id }, function (err1, data1) {
+    if (data1 && !err1) {
       res.json({
         status: "success",
-        payload: data1
-      })
+        payload: data1,
+      });
     } else {
-      Product.findById({_id: id}, function(err2, data2){
-        if(data2 && !err2) {
+      Product.findById({ _id: id }, function (err2, data2) {
+        if (data2 && !err2) {
           res.json({
             status: "success",
-            payload: data2
-          })
+            payload: data2,
+          });
         } else {
           res.json({
             status: "failure",
-            payload: "Product coundn't be found."
-          })
+            payload: "Product coundn't be found.",
+          });
         }
-      })
+      });
     }
-  })
-}
+  });
+};
 
 // Get all the userPosts done by any user
-module.exports.findAllUserPosts_get = async(req, res) => {
+module.exports.findAllUserPosts_get = async (req, res) => {
   // Get data from req.params
 
   // Get the databaseUserId of any user
   // Get data from req.body
   const userId = req.body.userId;
 
-  UserPost.find({postById: userId}, function(err1, data1){
-    if(data1 && data1.length > 0 && !err1) {
+  UserPost.find({ postById: userId }, function (err1, data1) {
+    if (data1 && data1.length > 0 && !err1) {
       res.json({
         status: "success",
-        payload: data1
-      })
-    } else if(data1 && data1.length <= 0 && !err1) {
+        payload: data1,
+      });
+    } else if (data1 && data1.length <= 0 && !err1) {
       res.json({
         status: "success",
         payload: "This user doesnot posted anything yet or User doesn't exists",
-      })
+      });
     } else {
       res.json({
         status: "failure",
-        payload: "Opps...something happened wrong"
-      })
+        payload: "Opps...something happened wrong",
+      });
     }
-  })
-}
+  });
+};
 
 // Get all the business post done by any user
-module.exports.findAllBusinessPosts_get = async(req, res) => {
+module.exports.findAllBusinessPosts_get = async (req, res) => {
   // Get data from req.params
 
   // Get the databaseUserId of any user
   // Get data from req.body
   const userId = req.body.userId;
 
-  Product.find({postById: userId}, function(err1, data1){
-    if(data1 && data1.length > 0 && !err1) {
+  Product.find({ postById: userId }, function (err1, data1) {
+    if (data1 && data1.length > 0 && !err1) {
       res.json({
         status: "success",
-        payload: data1
-      })
-    } else if(data1 && data1.length <= 0 && !err1) {
+        payload: data1,
+      });
+    } else if (data1 && data1.length <= 0 && !err1) {
       res.json({
         status: "success",
-        payload: "This user doesnot posted any Product yet or User doesn't exists",
-      })
+        payload:
+          "This user doesnot posted any Product yet or User doesn't exists",
+      });
     } else {
       res.json({
         status: "failure",
-        payload: "Opps...something happened wrong"
-      })
+        payload: "Opps...something happened wrong",
+      });
     }
-  })
-}
+  });
+};
 
 // Convert the the databaseId to generalUserId(userName) or vice varsa
-module.exports.convertids_get = async(req, res) => {
+module.exports.convertids_get = async (req, res) => {
   // Get data from req.params
 
   // Get the databaseUserId of any user
   // Get data from req.body
   const userId = req.body.userId;
 
-  User.findOne({userName: userId}, function(err1, data1){
-    if(data1 && !err1) {
+  User.findOne({ userName: userId }, function (err1, data1) {
+    if (data1 && !err1) {
       res.json({
         status: "success",
-        payload: data1._id
-      })
-    } else if(!data1 && !err1) {
-      User.findById({_id: userId}, function(err2 ,data2){
-        if(data2 && !err2) {
+        payload: data1._id,
+      });
+    } else if (!data1 && !err1) {
+      User.findById({ _id: userId }, function (err2, data2) {
+        if (data2 && !err2) {
           res.json({
             status: "success",
-            payload: data2.userName
-          })
+            payload: data2.userName,
+          });
         } else {
           res.json({
             status: "failure",
-            payload: "User not found."
-          })
+            payload: "User not found.",
+          });
         }
+      });
+    }
+  });
+};
+
+// Delete any userPosts done by general users
+module.exports.deleteUserPost_post = async (req, res) => {
+  // Get data from req.params
+
+  // Get the generalUserId(not by usind databaseId)
+  // Get data from req.body
+  const userPostId = req.body.userPostId;
+
+  UserPost.findByIdAndDelete({ _id: userPostId }, function (err1, data1) {
+    if (data1 && !err1) {
+      var count = 0;
+      data1.images.map((item) => {
+        const imgName = item.split("/")[4];
+        s3.deleteObject(
+          {
+            Bucket: process.env.AWS_BUCKET_NAME,
+            Key: `userPosts/${imgName}`,
+          },
+          function (err2, data2) {
+            if (data1) {
+              count += 1;
+
+              if (count == data1.images.length) {
+                res.json({
+                  status: "success",
+                  payload: "UserPost deleted successfully"
+                })
+              }
+            } else {
+              res.json({
+                status: "failure",
+                payload: "Opps...Something happened wrong."
+              })
+            }
+          }
+        );
+      });
+    } else {
+      res.json({
+        status: "failure",
+        payload: "Opps...Something happened wrong or Userpost couldn't be found"
       })
     }
-  })
-}
+  });
+};

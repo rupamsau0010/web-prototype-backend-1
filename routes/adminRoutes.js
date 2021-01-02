@@ -27,6 +27,8 @@ router.get("/findallbusinessposts", adminControllers.findAllBusinessPosts_get)
 // Convert the the databaseId to generalUserId(userName) or vice varsa
 router.get("/converids", adminControllers.convertids_get)
 
+// Delete any userPost by databaseId
+router.post("/deleteuserpost", adminControllers.deleteUserPost_post)
 
 // Export the module
 module.exports = router
