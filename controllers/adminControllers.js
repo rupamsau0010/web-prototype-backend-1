@@ -131,3 +131,31 @@ module.exports.findBusinessPost_get = async(req, res) => {
     }
   })
 }
+
+// Get all the userPosts done by any user
+module.exports.findAllUserPosts_get = async(req, res) => {
+  // Get data from req.params
+
+  // Get the databaseUserId of any user
+  // Get data from req.body
+  const userId = req.body.userId;
+
+  UserPost.find({postById: userId}, function(err1, data1){
+    if(data1 && data1.length > 0 && !err1) {
+      res.json({
+        status: "success",
+        payload: data1
+      })
+    } else if(data1 && data1.length <= 0 && !err1) {
+      res.json({
+        status: "success",
+        payload: "This user doesnot posted anything yet or User doesn't exists",
+      })
+    } else {
+      res.json({
+        status: "failure",
+        payload: "Opps...something happened wrong"
+      })
+    }
+  })
+}
