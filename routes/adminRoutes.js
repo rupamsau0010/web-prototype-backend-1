@@ -15,5 +15,8 @@ router.get("/finduserpost", adminControllers.findUserPost_get)
 // Get the business details of a business user(only by generalUserId(userName))
 router.get("/findbusinessuser", adminControllers.findBusinessUser_get)
 
+// Get any products by databaseId or uniqueCode of the product
+router.get("/findbusinesspost", adminControllers.findBusinessPost_get)
+
 // Export the module
 module.exports = router

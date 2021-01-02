@@ -99,3 +99,35 @@ module.exports.findUserPost_get = async(req, res) => {
     }
   })
 }
+
+// Get products by the business users by databaseId(productId) or uniqueCode
+module.exports.findBusinessPost_get = async(req, res) => {
+  // Get data from req.params
+
+  // Get the generalUserId(not by usind databaseId)
+  // Get data from req.body
+  const id = req.body.id
+
+  Product.findOne({uniqueCode: id}, function(err1, data1){
+    if(data1 && !err1) {
+      res.json({
+        status: "success",
+        payload: data1
+      })
+    } else {
+      Product.findById({_id: id}, function(err2, data2){
+        if(data2 && !err2) {
+          res.json({
+            status: "success",
+            payload: data2
+          })
+        } else {
+          res.json({
+            status: "failure",
+            payload: "Product coundn't be found."
+          })
+        }
+      })
+    }
+  })
+}
