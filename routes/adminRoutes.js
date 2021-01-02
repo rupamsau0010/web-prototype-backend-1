@@ -10,7 +10,7 @@ const adminControllers = require("../controllers/adminControllers")
 router.get("/finduser", adminControllers.findUser_get)
 
 // Delete any user based on the data provided(generalUserId or databaseUserId)
-router.post("/deleteuser", adminControllers.deleteUser_post)
+router.get("/finduserpost", adminControllers.findUserPost_get)
 
 // Get the business details of a business user(only by generalUserId(userName))
 router.get("/findbusinessuser", adminControllers.findBusinessUser_get)
