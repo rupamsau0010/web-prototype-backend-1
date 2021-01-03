@@ -39,5 +39,8 @@ router.get("/getcomments", adminControllers.getComments_get)
 // Delete mainComment by userPostId and mainCommentId
 router.post("/deletemaincomment", adminControllers.deleteMainComment_post)
 
+// Delete subcomment by userPostId and mainCommentId and subCommentId
+router.post("/deletesubcomment", adminControllers.deleteSubComment_post)
+
 // Export the module
 module.exports = router
