@@ -245,9 +245,23 @@ module.exports.deleteUserPost_post = async (req, res) => {
               count += 1;
 
               if (count == data1.images.length) {
-                res.json({
-                  status: "success",
-                  payload: "UserPost deleted successfully"
+                Comment.findOneAndDelete({userPostId: data1._id}, function(err3, data3){
+                  if(data3 && !err3) {
+                    res.json({
+                      status: "success",
+                      payload: "UserPost deleted successfully"
+                    })
+                  } else if(!data3 && !err3) {
+                    res.json({
+                      status: "success",
+                      payload: "UserPost deleted successfully"
+                    })
+                  } else if(err3) {
+                    res.json({
+                      status: "failure",
+                      payload: "Opps...Something happened wrong."
+                    })
+                  }
                 })
               }
             } else {
@@ -259,6 +273,12 @@ module.exports.deleteUserPost_post = async (req, res) => {
           }
         );
       });
+      if(data1.images.length <= 0) {
+        res.json({
+          status: "success",
+          payload: "Userpost deleted successfully"
+        })
+      }
     } else {
       res.json({
         status: "failure",
@@ -305,6 +325,12 @@ module.exports.deleteBusinessPost_post = async(req, res) => {
           }
         );
       });
+      if(data1.images.length <= 0) {
+        res.json({
+          status: "success",
+          payload: "Userpost deleted successfully"
+        })
+      }
     } else {
       res.json({
         status: "failure",
@@ -313,3 +339,5 @@ module.exports.deleteBusinessPost_post = async(req, res) => {
     }
   });
 }
+
+// 
