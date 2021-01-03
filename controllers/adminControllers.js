@@ -471,3 +471,27 @@ module.exports.getProductsByInfluence_get = async(req, res) => {
     })
   }
 }
+
+// Make external influence of any product by databaseId
+module.exports.makeExternalInfluence_post = async(req, res) => {
+  // Get data from req.params
+
+  // Get the generalUserId(not by usind databaseId)
+  // Get data from req.body
+  const productId = req.body.productId
+  const influance = req.body.influance
+
+  Product.findByIdAndUpdate({_id: productId}, {$inc: {numberOfCalling: Number(influance)}}, {new: true}, function(err1, data1){
+    if(data1 && !err1) {
+      res.json({
+        status: "success",
+        payload: data1
+      })
+    } else {
+      res.json({
+        status: "failure",
+        payload: "Opps...Something happened wrong"
+      })
+    }
+  })
+}

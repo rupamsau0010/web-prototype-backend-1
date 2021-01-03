@@ -45,5 +45,8 @@ router.post("/deletesubcomment", adminControllers.deleteSubComment_post)
 // Get the products by influence(to khow the value of influcnce)
 router.get("/productsbyinfluence", adminControllers.getProductsByInfluence_get)
 
+// Make external influence of any product by databaseId
+router.post("/createinfluence", adminControllers.makeExternalInfluence_post)
+
 // Export the module
 module.exports = router
