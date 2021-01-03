@@ -22,7 +22,7 @@ const saveComment = () => {
     // console.log(myTime);
 
     const comment = new Comment({
-        userPostId: "5fbfc467a6305247f410d219",
+        userPostId: "5ff142d40ea0993f90031348",
         comments: [
             {
                 maintag: "This is main tag 1",

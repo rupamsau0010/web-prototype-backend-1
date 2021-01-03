@@ -33,5 +33,8 @@ router.post("/deleteuserpost", adminControllers.deleteUserPost_post)
 // Delete any businessPost(product) by databaseId
 router.post("/deletebusinesspost", adminControllers.deleteBusinessPost_post)
 
+// Get comments from any post by userPostId
+router.get("/getcomments", adminControllers.getComments_get)
+
 // Export the module
 module.exports = router

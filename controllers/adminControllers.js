@@ -340,4 +340,30 @@ module.exports.deleteBusinessPost_post = async(req, res) => {
   });
 }
 
-// 
+// Get all comments of any product by admin
+module.exports.getComments_get = async(req, res) => {
+  // Get data from req.params
+
+  // Get the generalUserId(not by usind databaseId)
+  // Get data from req.body
+  const userPostId = req.body.userPostId;
+  
+  Comment.findOne({userPostId: userPostId}, function(err1, data1){
+    if(data1 && !err1) {
+      res.json({
+        status: "success",
+        payload: data1
+      })
+    } else if(!data1 && !err1) {
+      res.json({
+        status: "success",
+        payload: "No comments in this post still now."
+      })
+    } else if(err1) {
+      res.json({
+        status: "failure",
+        payload: "Opps...Something happened wrong"
+      })
+    }
+  })
+}
