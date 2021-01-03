@@ -448,3 +448,26 @@ module.exports.deleteSubComment_post = async (req, res) => {
     })
   }
 };
+
+// Get products by influance
+module.exports.getProductsByInfluence_get = async(req, res) => {
+  // Get data from req.params
+
+  // Get data from req.body
+  const productNumber = req.body.productNumber
+
+  // const newArray = await Product.find({}).sort({ _id: -1}).limit(6).skip(parseInt(skip))
+  const productArray = await Product.find({}).sort({numberOfCalling: -1}).limit(Number(productNumber))
+
+  if(productArray.length >= 0) {
+    res.json({
+      status: "success",
+      payload: productArray
+    })
+  } else {
+    res.json({
+      status: "failure",
+      payload: "No products still Now."
+    })
+  }
+}

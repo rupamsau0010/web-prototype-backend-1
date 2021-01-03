@@ -42,5 +42,8 @@ router.post("/deletemaincomment", adminControllers.deleteMainComment_post)
 // Delete subcomment by userPostId and mainCommentId and subCommentId
 router.post("/deletesubcomment", adminControllers.deleteSubComment_post)
 
+// Get the products by influence(to khow the value of influcnce)
+router.get("/productsbyinfluence", adminControllers.getProductsByInfluence_get)
+
 // Export the module
 module.exports = router
