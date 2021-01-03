@@ -367,3 +367,30 @@ module.exports.getComments_get = async(req, res) => {
     }
   })
 }
+
+//Delete main comment of any userPosts by the admin
+module.exports.deleteMainComment_post = async(req, res) => {
+  // Get data from req.params
+
+  // Get the generalUserId(not by usind databaseId)
+  // Get data from req.body
+  const userPostId = req.body.userPostId;
+  const mainCommentId = req.body.mainCommentId
+
+  Comment.findOneAndUpdate({userPostId: userPostId}, {$pull: {"comments": { _id: mainCommentId }}}, {new: true}, function(err1, data1){
+    if(!err1 && data1) {
+      res.json({
+        status: "success",
+        payload: data1
+      })
+    } else {
+      console.log(err1);
+      res.json({
+        status: "failure",
+        payload: "Opps...Something happened wrong."
+      })
+    }
+  })
+}
+
+// Delete any subComment of any comment of any UserPosts by the admin
